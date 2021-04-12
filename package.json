@@ -24,6 +24,7 @@
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "bootstrap": "^4.5.0",
+    "date-fns": "^2.19.0",
     "firebase": "^7.18.0",
     "ngx-owl-carousel-o": "^4.0.0",
     "ngx-perfect-scrollbar": "^9.0.0",

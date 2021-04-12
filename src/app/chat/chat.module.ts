@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbTooltipModule, NgbDropdownModule, NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule }   from '@angular/forms';
+
 
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
@@ -15,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
   declarations: [IndexComponent, ProfileDetailComponent],
   imports: [
+    FormsModule,
     PerfectScrollbarModule,
     NgbAccordionModule,
     CommonModule,
