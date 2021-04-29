@@ -14,7 +14,11 @@ import { IndexComponent } from './index/index.component';
 import { ProfileDetailComponent } from './profile-detail/profile-detail.component';
 import { TranslateModule } from '@ngx-translate/core';
 import {DevExtremeModule} from 'devextreme-angular';
-import {DxPopupModule} from 'devextreme-angular';
+import {DxPopupModule,
+        DxLoadPanelModule
+} from 'devextreme-angular';
+import {  NgxEmojiPickerModule  } from 'ngx-emoji-picker';
+
 
 @NgModule({
   declarations: [IndexComponent, ProfileDetailComponent],
@@ -30,6 +34,8 @@ import {DxPopupModule} from 'devextreme-angular';
     TranslateModule,
     DevExtremeModule,
     DxPopupModule,
+    DxLoadPanelModule,
+    NgxEmojiPickerModule
   ],
   exports: [ProfileDetailComponent]
 })

@@ -39,6 +39,9 @@ export class IndexComponent implements OnInit {
   sub: Subscription;
   popupVisible = false;
   binario: string;
+  loadingVisible = false;
+  toggled = false;
+
 
   listLang = [
     { text: 'English', flag: 'assets/images/flags/us.jpg', lang: 'en' },
@@ -146,22 +149,22 @@ export class IndexComponent implements OnInit {
 
   onEnviar = () => {
       let numeroFinal = this.contato.ds_numero_wp;
+      const texto = this.textoatual;
+      this.textoatual = null;
       numeroFinal = numeroFinal.replace('@c.us', '');
       this.MensagemEnviar = {
-        ds_corpo : this.textoatual,
+        ds_corpo : texto,
         ds_destinatario : numeroFinal
 
       };
       // tslint:disable-next-line: deprecation
       this.mensagensService.postMensagem(this.MensagemEnviar).subscribe((Res: Mensagem) => {
-
       this.MensagemRecebida = {
-        message : this.textoatual,
+        message : texto,
         align : 'right',
         time : format(new Date(), 'HH:mm'),
       };
       this.Messages.push(this.MensagemRecebida);
-      this.textoatual = null;
       setTimeout(() => {
         this.componentRef.directiveRef.scrollToBottom();
    }, 500);
@@ -218,10 +221,9 @@ export class IndexComponent implements OnInit {
   const reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onload = () => {
-     // console.log(reader.result);
+      this.showLoadPanel();
       let arquivoBi: any;
       arquivoBi = reader.result;
-      console.log(reader.result);
       this.binario = arquivoBi;
       let numeroFinal = this.contato.ds_numero_wp;
       numeroFinal = numeroFinal.replace('@c.us', '');
@@ -233,13 +235,28 @@ export class IndexComponent implements OnInit {
       };
       // tslint:disable-next-line: deprecation
       this.mensagensService.postMensagem(mensagem).subscribe((Res: Mensagem) => {
+        this.MensagemRecebida = {
+          align : 'right',
+          time : format(new Date(), 'HH:mm'),
+          isimage: mensagem.ds_mimetype.startsWith('image') ? true : false,
+          isfile: mensagem.ds_mimetype.startsWith('image') ? false : true,
+          imageContent : mensagem.ds_mimetype.startsWith('image') ? this.sanitizer.bypassSecurityTrustResourceUrl(`data:${mensagem.ds_mimetype};base64, ${mensagem.ds_data}`) : null,
+          fileContent : mensagem.ds_mimetype.startsWith('image') ? null : 'arquivo',
+          ds_data: mensagem.ds_data,
+          ds_mimetype: mensagem.ds_mimetype,
+          st_midia: true
+        };
+        this.Messages.push(this.MensagemRecebida);
         this.textoatual = null;
         setTimeout(() => {
           this.hideInfo();
           this.componentRef.directiveRef.scrollToBottom();
+          this.hideLoadPanel();
      }, 500);
         this.componentRef.directiveRef.scrollToBottom();
       }, error => {
+        this.hideInfo();
+        this.hideLoadPanel();
         console.log(error);
       });
   };
@@ -251,6 +268,17 @@ showInfo(): any {
 
 hideInfo(): any {
   this.popupVisible = false;
+}
+showLoadPanel(): any {
+  this.loadingVisible = true;
+}
+
+hideLoadPanel(): any {
+  this.loadingVisible = false;
+}
+
+handleSelection(event: any): any {
+  this.textoatual = this.textoatual == null ? event.char : this.textoatual + event.char;
 }
 
 downloadFile(event: any): any{
@@ -264,6 +292,7 @@ downloadFile(event: any): any{
   const blob = new Blob([byteArray], {type: event.ds_mimetype});
   FileSaver.saveAs(blob, 'arquivo');
 }
+
 
 }
 

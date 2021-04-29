@@ -11,6 +11,17 @@
     <input id="uploadFile" type="file" (change)="handleUpload($event)" #file />
   </div>
 </dx-popup>
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  message="Enviando, aguarde..."
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  [closeOnOutsideClick]="false"
+>
+</dx-load-panel>
 <div class="layout-wrapper d-lg-flex">
   <div class="side-menu flex-lg-column mr-lg-1">
     <!-- LOGO -->
@@ -739,7 +750,7 @@
               <div class="chat-input-links ml-md-2">
                 <ul class="list-inline mb-0">
                   <li class="list-inline-item">
-                    <button
+                    <!-- <button
                       type="button"
                       class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect"
                       data-toggle="tooltip"
@@ -747,7 +758,16 @@
                       ngbTooltip="Emoji"
                     >
                       <i class="ri-emotion-happy-line"></i>
-                    </button>
+                    </button> -->
+                    <i
+                      class="ri-emotion-happy-line btn btn-link text-decoration-none font-size-16 btn-lg waves-effect"
+                      (click)="toggled = !toggled"
+                      [(emojiPickerIf)]="toggled"
+                      [emojiPickerDirection]="
+                        'bottom' || 'top' || 'left' || 'right'
+                      "
+                      (emojiPickerSelect)="handleSelection($event)"
+                    ></i>
                   </li>
                   <li class="list-inline-item">
                     <button
