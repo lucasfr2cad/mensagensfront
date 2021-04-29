@@ -1,3 +1,4 @@
+import { SafeResourceUrl } from '@angular/platform-browser';
 export interface Message {
     id?: number;
     message?: string;
@@ -7,7 +8,7 @@ export interface Message {
     isToday?: boolean;
     message2?: string;
     align?: string;
-    imageContent?: Array<{}>;
+    imageContent?: SafeResourceUrl;
     isimage?: boolean;
     isfile?: boolean;
     fileContent?: string;
@@ -20,4 +21,11 @@ export interface Message {
     st_de_mim?: boolean;
     vl_status?: number;
     ds_nome_contato_curto?: string;
+    st_midia?: boolean;
+  // tslint:disable-next-line: variable-name
+   ds_mimetype?: string;
+  // tslint:disable-next-line: variable-name
+  ds_data?: string;
+  // tslint:disable-next-line: variable-name
+  ds_nome_do_arquivo?: string;
 }

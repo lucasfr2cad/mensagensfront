@@ -19,6 +19,9 @@ import { JwtInterceptor } from './core/helpers/jwt.interceptor';
 
 
 
+
+
+
 if (environment.defaultauth === 'firebase') {
   initFirebaseBackend(environment.firebaseConfig);
 } else {
@@ -40,6 +43,7 @@ export function createTranslateLoader(http: HttpClient): any {
     BrowserModule,
     AppRoutingModule,
     ChatModule,
+    BrowserModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

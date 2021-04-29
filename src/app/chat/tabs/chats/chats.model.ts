@@ -1,5 +1,5 @@
 export interface Chats {
-    id: number;
+    id: string;
     name: string;
     profilePicture?: string;
     status?: string;
@@ -8,4 +8,12 @@ export interface Chats {
     unRead?: string;
     isActive?: boolean;
     isTyping?: boolean;
+    ds_nome?: string;
+    cd_codigo?: string;
+    dt_criacao?: string;
+    cd_chat?: string;
+    cd_remetente?: string;
+    ds_ultima_msg?: string;
+    ds_remetente?: string;
+    dt_atualizacao?: string;
 }

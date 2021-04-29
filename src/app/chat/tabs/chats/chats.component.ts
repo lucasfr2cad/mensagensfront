@@ -1,9 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
-
-import { chat } from './data';
-import { Chats } from './chats.model';
 import { TranslateService } from '@ngx-translate/core';
+import { Chats } from './chats.model';
+import {Chat} from '../../../core/models/chat.models';
+import {Contatos} from '../../../core/models/contato.models';
+import { ChatsService } from '../../../core/services/chats.service';
+import {ChatativoService} from '../../../core/services/chatativo.service';
+import { SignalRService } from '../../../core/services/signalR.service';
+import {EventEmitterService} from '../../../core/services/eventemitter.service';
+import { format } from 'date-fns';
+import { Subscription } from 'rxjs';
+
+
+
 
 @Component({
   selector: 'app-chats',
@@ -14,10 +23,14 @@ import { TranslateService } from '@ngx-translate/core';
  * Tab-chat component
  */
 export class ChatsComponent implements OnInit {
-
+  @Output() callParent = new EventEmitter<any>();
   chat: Chats[];
+  contato: Contatos;
+  sub: Subscription;
 
-  constructor(public translate: TranslateService) { }
+
+  constructor(public translate: TranslateService, private chatsService: ChatsService,
+              private chatativo: ChatativoService, private readonly signalRService: SignalRService) { }
 
   customOptions: OwlOptions = {
     loop: true,
@@ -30,15 +43,36 @@ export class ChatsComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.LerChats();
+    this.sub = EventEmitterService.get('NovaMensagem').subscribe(
+      (res) => this.LerChats()
+    );
+  }
 
-    this.chat = chat;
+  LerChats = () => {
+    // tslint:disable-next-line: deprecation
+    this.chatsService.getAllChatId('ff2caecc-b9d5-4c4e-ab13-25cef0a70a50').subscribe((res) => {
+      res.forEach(x => {
+        x.id = x.cd_codigo;
+        x.name = x.ds_nome;
+        x.cd_chat = x.cd_chat;
+        x.cd_remetente = x.cd_remetente;
+        x.lastMessage = x.ds_ultima_msg;
+        x.time = format(new Date(x.dt_atualizacao), 'HH:mm');
+      });
+      this.chat = res;
+    }, error => {
+      console.log('Errrou');
+    });
   }
 
   /**
    * Show user chat
    */
   // tslint:disable-next-line: typedef
-  showChat() {
+  showChat = (event: Chat) => {
+    this.chatativo.nomeia(event.cd_codigo);
     document.getElementById('chat-room').classList.add('user-chat-show');
+    this.callParent.emit(event);
   }
 }

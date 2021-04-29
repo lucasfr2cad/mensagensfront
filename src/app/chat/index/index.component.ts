@@ -1,19 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-
 import { Message } from './chat.model';
-
 import { environment } from '../../../environments/environment';
 import { AuthenticationService } from '../../core/services/auth.service';
 import { AuthfakeauthenticationService } from '../../core/services/authfake.service';
+import {EventEmitterService} from '../../core/services/eventemitter.service';
 import { MensagensService } from '../../core/services/mensagens.service';
-
+import { UsuarioService } from '../../core/services/usuarios.service';
 import { format } from 'date-fns';
 import { PerfectScrollbarComponent, PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
-
-
-
+import { Contatos } from 'src/app/core/models/contato.models';
+import {Mensagem} from '../../core/models/mensagem.models';
+import { Chat } from 'src/app/core/models/chat.models';
+import { Subscription } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
+import { saveAs } from 'file-saver';
 
 
 @Component({
@@ -21,7 +23,6 @@ import { PerfectScrollbarComponent, PerfectScrollbarDirective } from 'ngx-perfec
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss']
 })
-
 /**
  * Chat-component
  */
@@ -31,6 +32,13 @@ export class IndexComponent implements OnInit {
   Messages: Message[];
   textoatual = '';
   MensagemEnviar: Message;
+  MensagemRecebida: Message;
+  nomeContatoBar = '';
+  contato: Contatos;
+  numeroEnviar: string;
+  sub: Subscription;
+  popupVisible = false;
+  binario: string;
 
   listLang = [
     { text: 'English', flag: 'assets/images/flags/us.jpg', lang: 'en' },
@@ -43,42 +51,90 @@ export class IndexComponent implements OnInit {
   lang: string;
 
   @ViewChild(PerfectScrollbarComponent, { static: false }) componentRef?: PerfectScrollbarComponent;
+  @ViewChild(PerfectScrollbarDirective, { static: false }) directiveRef?: PerfectScrollbarDirective;
 
 
   constructor(private authFackservice: AuthfakeauthenticationService, private authService: AuthenticationService,
-              private router: Router, public translate: TranslateService, private mensagensService: MensagensService) { }
+              private router: Router, public translate: TranslateService, private mensagensService: MensagensService,
+              private usuarioService: UsuarioService, private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
-    this.LerMensagens();
     this.lang = this.translate.currentLang;
-    setTimeout(() => {
-      this.componentRef.directiveRef.scrollToBottom();
- }, 1000);
+    this.contato = {
+   ds_nome: 'Selecione um contato'
+  };
+    this.sub = EventEmitterService.get('NovaMensagem').subscribe(
+      (x) => {
+        this.MensagemRecebida = {
+          message : x.ds_corpo,
+          align : x.st_de_mim ? 'right' : 'left',
+          time : format(new Date(x.dt_criacao), 'HH:mm'),
+          vl_status : x.vl_status,
+          name : x.ds_nome_contato_curto,
+          isimage : x.st_midia && x.ds_mimetype === 'image/jpeg' ? true : false,
+          imageContent : this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${x.ds_data}`)
+        };
+        this.Messages.push(this.MensagemRecebida);
+        setTimeout(() => {
+          this.componentRef.directiveRef.scrollToBottom();
+     }, 1000);
+      }, error => {
+        console.log('Errrou');
+      });
   }
 
-  LerMensagens = () => {
-    this.mensagensService.getAll().subscribe((res) => {
+  LerMensagensPorChat = (chat: Chat) => {
+    // tslint:disable-next-line: deprecation
+    this.mensagensService.getAllMensagemId(chat.cd_codigo).subscribe(
+      (res) => {
       res.forEach(x => {
         x.message = x.ds_corpo;
-        x.align = x.st_de_mim ? 'right' : 'left'
+        x.align = x.st_de_mim ? 'right' : 'left';
         x.time = format(new Date(x.dt_criacao), 'HH:mm');
-        x.profile = 'assets/images/users/avatar-4.jpg';
+        // x.profile = 'assets/images/users/avatar-4.jpg';
         x.vl_status = x.vl_status;
         x.name = x.ds_nome_contato_curto;
+        if (x.ds_mimetype !== null)
+        {
+          if (x.ds_mimetype.startsWith('image')){
+          x.isimage = true;
+          x. imageContent = this.sanitizer.bypassSecurityTrustResourceUrl(`data:${x.ds_mimetype};base64, ${x.ds_data}`);
+        }
+          else{
+            x.isfile = true;
+            x.fileContent = 'arquivo';
+          }
+        }
       });
       this.Messages = res;
-      setTimeout(() => {
-        this.LerMensagens();
-        this.componentRef.directiveRef.scrollToBottom();
-   }, 3000);
+      this.componentRef.directiveRef.scrollToBottom();
     }, error => {
       console.log('Errrou');
     });
   }
 
   // tslint:disable-next-line: variable-name
-  getClass = (vl_status) => {
+  SetarUsuario(chat: Chat): any{
+    this.usuarioService.getContatoPorId(chat.cd_remetente)
+    // tslint:disable-next-line: deprecation
+    .subscribe((res) => {
+      this.contato = res;
+    },
+    error => {
+      console.log(error);
+    });
+  }
 
+  onCallParent = (chat: Chat) => {
+    this.LerMensagensPorChat(chat);
+    this.SetarUsuario(chat);
+    setTimeout(() => {
+      this.componentRef.directiveRef.scrollToBottom();
+ }, 1000);
+  }
+
+  // tslint:disable-next-line: variable-name
+  getClass = (vl_status) => {
     return {'ri-error-warning-line': vl_status === -1,
             'ri-checkbox-blank-circle-line': vl_status === 0,
            'ri-checkbox-circle-line': vl_status === 1,
@@ -86,45 +142,55 @@ export class IndexComponent implements OnInit {
            'ri-check-double-line': vl_status === 3,
            '': vl_status === 100,
           };
-
  }
 
   onEnviar = () => {
-    console.log(this.textoatual)
+      let numeroFinal = this.contato.ds_numero_wp;
+      numeroFinal = numeroFinal.replace('@c.us', '');
+      this.MensagemEnviar = {
+        ds_corpo : this.textoatual,
+        ds_destinatario : numeroFinal
 
-    this.MensagemEnviar = {
-      ds_corpo : this.textoatual,
-      ds_destinatario : '555198961483'
-    }
-    this.mensagensService.postMensagem(this.MensagemEnviar).subscribe((res) => {
-      console.log(res);
+      };
+      // tslint:disable-next-line: deprecation
+      this.mensagensService.postMensagem(this.MensagemEnviar).subscribe((Res: Mensagem) => {
+
+      this.MensagemRecebida = {
+        message : this.textoatual,
+        align : 'right',
+        time : format(new Date(), 'HH:mm'),
+      };
+      this.Messages.push(this.MensagemRecebida);
       this.textoatual = null;
+      setTimeout(() => {
+        this.componentRef.directiveRef.scrollToBottom();
+   }, 500);
+      this.componentRef.directiveRef.scrollToBottom();
     }, error => {
       console.log(error);
     });
+
   }
 
 
   /**
    * Show user profile
    */
-  // tslint:disable-next-line: typedef
-  showUserProfile() {
+  showUserProfile(): any {
     document.getElementById('profile-detail').style.display = 'block';
   }
 
   /**
    * Close user chat
    */
-  // tslint:disable-next-line: typedef
-  closeUserChat() {
+  closeUserChat(): any {
     document.getElementById('chat-room').classList.remove('user-chat-show');
   }
 
   /**
    * Logout the user
    */
-  logout() {
+  logout(): any {
     if (environment.defaultauth === 'firebase') {
       this.authService.logout();
     } else if (environment.defaultauth === 'fackbackend') {
@@ -137,8 +203,67 @@ export class IndexComponent implements OnInit {
    * Set language
    * @param lang language
    */
-  setLanguage(lang) {
+  setLanguage(lang): any {
     this.translate.use(lang);
     this.lang = lang;
   }
+
+  // tslint:disable-next-line: use-lifecycle-interface
+  ngOnDestroy(): any {
+    this.sub.unsubscribe();
 }
+
+  handleUpload(event: any): any {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => {
+     // console.log(reader.result);
+      let arquivoBi: any;
+      arquivoBi = reader.result;
+      console.log(reader.result);
+      this.binario = arquivoBi;
+      let numeroFinal = this.contato.ds_numero_wp;
+      numeroFinal = numeroFinal.replace('@c.us', '');
+      const mensagem = {
+        ds_data : this.binario.substr(this.binario.indexOf(',') + 1),
+        ds_destinatario : numeroFinal,
+        ds_mimetype : this.binario.match(/[^:\s*]\w+\/[\w-+\d.]+(?=[;| ])/)[0],
+        st_midia : true
+      };
+      // tslint:disable-next-line: deprecation
+      this.mensagensService.postMensagem(mensagem).subscribe((Res: Mensagem) => {
+        this.textoatual = null;
+        setTimeout(() => {
+          this.hideInfo();
+          this.componentRef.directiveRef.scrollToBottom();
+     }, 500);
+        this.componentRef.directiveRef.scrollToBottom();
+      }, error => {
+        console.log(error);
+      });
+  };
+}
+
+showInfo(): any {
+  this.popupVisible = true;
+}
+
+hideInfo(): any {
+  this.popupVisible = false;
+}
+
+downloadFile(event: any): any{
+  const FileSaver = require('file-saver');
+  const byteCharacters = atob(event.ds_data);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], {type: event.ds_mimetype});
+  FileSaver.saveAs(blob, 'arquivo');
+}
+
+}
+

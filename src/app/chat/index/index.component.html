@@ -1,3 +1,16 @@
+<dx-popup
+  [width]="600"
+  [height]="300"
+  [showTitle]="true"
+  title="Selecionar e Enviar"
+  [dragEnabled]="false"
+  [closeOnOutsideClick]="true"
+  [(visible)]="popupVisible"
+>
+  <div>
+    <input id="uploadFile" type="file" (change)="handleUpload($event)" #file />
+  </div>
+</dx-popup>
 <div class="layout-wrapper d-lg-flex">
   <div class="side-menu flex-lg-column mr-lg-1">
     <!-- LOGO -->
@@ -184,7 +197,7 @@
             aria-expanded="false"
           >
             <img
-              src="assets/images/users/avatar-1.jpg"
+              src="assets/images/users/avatar-4.jpg"
               alt=""
               class="profile-user rounded-circle"
             />
@@ -233,7 +246,7 @@
         aria-labelledby="pills-chat-tab"
         *ngIf="activetab === 2"
       >
-        <app-chats></app-chats>
+        <app-chats (callParent)="onCallParent($event)"></app-chats>
       </div>
       <!-- End chats tab-pane -->
 
@@ -289,18 +302,25 @@
                     ><i class="ri-arrow-left-s-line"></i
                   ></a>
                 </div>
-                <div class="mr-3">
+                <!-- <div class="mr-3">
                   <img
                     src="assets/images/users/avatar-4.jpg"
                     class="rounded-circle avatar-xs"
                     alt=""
                   />
+                </div> -->
+                <div class="avatar-xs">
+                  <span
+                    class="avatar-title rounded-circle bg-soft-primary text-primary"
+                  >
+                    {{ (contato.ds_nome | translate).charAt(0) }}
+                  </span>
                 </div>
                 <div class="media-body overflow-hidden">
                   <h5 class="font-size-16 mb-0 text-truncate">
-                    <a href="#" class="text-reset user-profile-show">{{
-                      "chat.chatpanelheader.name" | translate
-                    }}</a>
+                    <a href="#" class="text-reset user-profile-show">
+                      {{ contato.ds_nome }}</a
+                    >
                     <i
                       class="ri-record-circle-fill font-size-10 text-success d-inline-block ml-1"
                     ></i>
@@ -414,7 +434,12 @@
             >
               <div class="conversation-list" *ngIf="!data.isToday">
                 <div class="chat-avatar">
-                  <img src="{{ data.profile }}" alt="" />
+                  <img
+                    *ngIf="data.profile"
+                    src="{{ data.profile }}"
+                    alt=""
+                    class="rounded-circle avatar-xs"
+                  />
                 </div>
 
                 <div class="user-chat-content">
@@ -435,7 +460,7 @@
                       >
                         <li
                           class="list-inline-item message-img-list"
-                          *ngFor="let item of data.imageContent"
+                          *ngIf="data.imageContent"
                         >
                           <div>
                             <a
@@ -444,7 +469,7 @@
                               title="Project 1"
                             >
                               <img
-                                :src="{{ item }}"
+                                [src]="data.imageContent"
                                 alt=""
                                 class="rounded border"
                               />
@@ -453,7 +478,7 @@
                           <div class="message-img-link">
                             <ul class="list-inline mb-0">
                               <li class="list-inline-item">
-                                <a href="#">
+                                <a (click)="downloadFile(data)" href="#">
                                   <i class="ri-download-2-line"></i>
                                 </a>
                               </li>
@@ -534,7 +559,11 @@
                           <div class="ml-4">
                             <ul class="list-inline mb-0 font-size-20">
                               <li class="list-inline-item">
-                                <a href="#" class="text-muted">
+                                <a
+                                  (click)="downloadFile(data)"
+                                  href="#"
+                                  class="text-muted"
+                                >
                                   <i class="ri-download-2-line"></i>
                                 </a>
                               </li>
@@ -722,15 +751,18 @@
                   </li>
                   <li class="list-inline-item">
                     <button
+                      mat-button
                       type="button"
                       class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect"
                       data-toggle="tooltip"
                       data-placement="top"
                       ngbTooltip="Attached File"
+                      (click)="showInfo()"
                     >
                       <i class="ri-attachment-line"></i>
                     </button>
                   </li>
+
                   <li class="list-inline-item">
                     <button
                       type="submit"

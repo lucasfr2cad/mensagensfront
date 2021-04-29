@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbTooltipModule, NgbDropdownModule, NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
@@ -13,6 +13,8 @@ import { ChatRoutingModule } from './chat-routing.module';
 import { IndexComponent } from './index/index.component';
 import { ProfileDetailComponent } from './profile-detail/profile-detail.component';
 import { TranslateModule } from '@ngx-translate/core';
+import {DevExtremeModule} from 'devextreme-angular';
+import {DxPopupModule} from 'devextreme-angular';
 
 @NgModule({
   declarations: [IndexComponent, ProfileDetailComponent],
@@ -25,7 +27,9 @@ import { TranslateModule } from '@ngx-translate/core';
     TabsModule,
     NgbTooltipModule,
     NgbDropdownModule,
-    TranslateModule
+    TranslateModule,
+    DevExtremeModule,
+    DxPopupModule,
   ],
   exports: [ProfileDetailComponent]
 })
