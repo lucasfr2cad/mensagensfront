@@ -16,6 +16,7 @@ import { initFirebaseBackend } from './authUtils';
 import { FakeBackendInterceptor } from './core/helpers/fake-backend';
 import { ErrorInterceptor } from './core/helpers/error.interceptor';
 import { JwtInterceptor } from './core/helpers/jwt.interceptor';
+import { ToastrModule } from 'ngx-toastr';
 
 
 
@@ -44,6 +45,7 @@ export function createTranslateLoader(http: HttpClient): any {
     AppRoutingModule,
     ChatModule,
     BrowserModule,
+    ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

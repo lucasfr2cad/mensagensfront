@@ -17,4 +17,6 @@ export class Usuario {
   ds_foto?:	string;
   // tslint:disable-next-line: variable-name
   ds_numero_wp?:	string;
+  // tslint:disable-next-line: variable-name
+  ds_token?: string;
 }

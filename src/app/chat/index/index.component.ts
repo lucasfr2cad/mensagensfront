@@ -41,6 +41,7 @@ export class IndexComponent implements OnInit {
   binario: string;
   loadingVisible = false;
   toggled = false;
+  chatativo = false;
 
 
   listLang = [
@@ -124,16 +125,17 @@ export class IndexComponent implements OnInit {
       this.contato = res;
     },
     error => {
-      console.log(error);
+      console.log('Erro ao setar usuário');
     });
   }
 
   onCallParent = (chat: Chat) => {
+    this.chatativo = true;
     this.LerMensagensPorChat(chat);
     this.SetarUsuario(chat);
     setTimeout(() => {
       this.componentRef.directiveRef.scrollToBottom();
- }, 1000);
+ }, 3000);
   }
 
   // tslint:disable-next-line: variable-name
@@ -169,8 +171,6 @@ export class IndexComponent implements OnInit {
         this.componentRef.directiveRef.scrollToBottom();
    }, 500);
       this.componentRef.directiveRef.scrollToBottom();
-    }, error => {
-      console.log(error);
     });
 
   }

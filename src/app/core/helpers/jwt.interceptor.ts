@@ -24,10 +24,10 @@ export class JwtInterceptor implements HttpInterceptor {
         } else {
             // add authorization header with jwt token if available
             const currentUser = this.authfackservice.currentUserValue;
-            if (currentUser && currentUser.token) {
+            if (currentUser && currentUser.ds_token) {
                 request = request.clone({
                     setHeaders: {
-                        Authorization: `Bearer ${currentUser.token}`
+                        Authorization: `Bearer ${currentUser.ds_token}`
                     }
                 });
             }

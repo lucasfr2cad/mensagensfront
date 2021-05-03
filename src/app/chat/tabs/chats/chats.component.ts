@@ -10,6 +10,7 @@ import { SignalRService } from '../../../core/services/signalR.service';
 import {EventEmitterService} from '../../../core/services/eventemitter.service';
 import { format } from 'date-fns';
 import { Subscription } from 'rxjs';
+import { AuthfakeauthenticationService } from 'src/app/core/services/authfake.service';
 
 
 
@@ -30,7 +31,8 @@ export class ChatsComponent implements OnInit {
 
 
   constructor(public translate: TranslateService, private chatsService: ChatsService,
-              private chatativo: ChatativoService, private readonly signalRService: SignalRService) { }
+              private chatativo: ChatativoService, private readonly signalRService: SignalRService,
+              private authfackservice: AuthfakeauthenticationService) { }
 
   customOptions: OwlOptions = {
     loop: true,
@@ -51,7 +53,8 @@ export class ChatsComponent implements OnInit {
 
   LerChats = () => {
     // tslint:disable-next-line: deprecation
-    this.chatsService.getAllChatId('ff2caecc-b9d5-4c4e-ab13-25cef0a70a50').subscribe((res) => {
+    const currentUser = this.authfackservice.currentUserValue;
+    this.chatsService.getAllChatId(currentUser.cd_codigo).subscribe((res) => {
       res.forEach(x => {
         x.id = x.cd_codigo;
         x.name = x.ds_nome;
@@ -61,8 +64,6 @@ export class ChatsComponent implements OnInit {
         x.time = format(new Date(x.dt_atualizacao), 'HH:mm');
       });
       this.chat = res;
-    }, error => {
-      console.log('Errrou');
     });
   }
 
@@ -72,7 +73,9 @@ export class ChatsComponent implements OnInit {
   // tslint:disable-next-line: typedef
   showChat = (event: Chat) => {
     this.chatativo.nomeia(event.cd_codigo);
-    document.getElementById('chat-room').classList.add('user-chat-show');
     this.callParent.emit(event);
+    setTimeout(() => {
+      document.getElementById('chat-room').classList.add('user-chat-show');
+ }, 3000);
   }
 }
