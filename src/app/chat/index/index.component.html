@@ -437,7 +437,11 @@
         <!-- end chat user head -->
 
         <!-- start chat conversation -->
-        <perfect-scrollbar class="chat-conversation p-3 p-lg-4">
+        <perfect-scrollbar
+          #perfectScroll
+          class="chat-conversation p-3 p-lg-4"
+          (psYReachStart)="handleScroll($event)"
+        >
           <ul class="list-unstyled mb-0">
             <li
               *ngFor="let data of Messages"

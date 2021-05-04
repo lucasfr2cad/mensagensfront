@@ -24,4 +24,8 @@ export class Chat {
   ds_data?: string;
   // tslint:disable-next-line: variable-name
   ds_nome_do_arquivo?: string;
+  // tslint:disable-next-line: variable-name
+  cd_destinatario?: string;
+
+  id?: string;
 }

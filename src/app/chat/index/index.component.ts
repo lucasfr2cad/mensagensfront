@@ -16,6 +16,10 @@ import { Chat } from 'src/app/core/models/chat.models';
 import { Subscription } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { saveAs } from 'file-saver';
+import { MensagemParametroModelo } from '../../core/models/mensagemParametro.Models';
+import { ChatativoService } from 'src/app/core/services/chatativo.service';
+import { Usuario } from 'src/app/core/models/usuario.models';
+
 
 
 @Component({
@@ -42,6 +46,11 @@ export class IndexComponent implements OnInit {
   loadingVisible = false;
   toggled = false;
   chatativo = false;
+  // tslint:disable-next-line: variable-name
+  vl_Numero_da_Pagina = 1;
+  // tslint:disable-next-line: variable-name
+  vl_Tamanho_da_Pagina = 50;
+  mensagemParametroModelo: MensagemParametroModelo;
 
 
   listLang = [
@@ -56,22 +65,26 @@ export class IndexComponent implements OnInit {
 
   @ViewChild(PerfectScrollbarComponent, { static: false }) componentRef?: PerfectScrollbarComponent;
   @ViewChild(PerfectScrollbarDirective, { static: false }) directiveRef?: PerfectScrollbarDirective;
+  @ViewChild('perfectScroll') perfectScroll: PerfectScrollbarComponent;
+
 
 
   constructor(private authFackservice: AuthfakeauthenticationService, private authService: AuthenticationService,
               private router: Router, public translate: TranslateService, private mensagensService: MensagensService,
-              private usuarioService: UsuarioService, private sanitizer: DomSanitizer) { }
+              private sanitizer: DomSanitizer, private chatativoService: ChatativoService,
+              private authfackservice: AuthfakeauthenticationService, private usuarioService: UsuarioService) { }
 
   ngOnInit(): void {
     this.lang = this.translate.currentLang;
     this.contato = {
    ds_nome: 'Selecione um contato'
   };
+    const currentUser = this.authfackservice.currentUserValue;
     this.sub = EventEmitterService.get('NovaMensagem').subscribe(
       (x) => {
         this.MensagemRecebida = {
           message : x.ds_corpo,
-          align : x.st_de_mim ? 'right' : 'left',
+          align : x.ds_remetente === currentUser.ds_numero_wp ? 'right' : 'left',
           time : format(new Date(x.dt_criacao), 'HH:mm'),
           vl_status : x.vl_status,
           name : x.ds_nome_contato_curto,
@@ -79,17 +92,56 @@ export class IndexComponent implements OnInit {
           imageContent : this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${x.ds_data}`)
         };
         this.Messages.push(this.MensagemRecebida);
-        setTimeout(() => {
-          this.componentRef.directiveRef.scrollToBottom();
-     }, 1000);
+        this.perfectScroll.directiveRef.scrollToBottom(0, 1);
       }, error => {
         console.log('Errrou');
       });
   }
 
-  LerMensagensPorChat = (chat: Chat) => {
+  LerMensagensPorChat = (chatId: string) => {
     // tslint:disable-next-line: deprecation
-    this.mensagensService.getAllMensagemId(chat.cd_codigo).subscribe(
+    this.mensagemParametroModelo = {
+      vl_Numero_da_Pagina : this.vl_Numero_da_Pagina,
+      vl_Tamanho_da_Pagina : this.vl_Tamanho_da_Pagina
+    };
+    const currentUser = this.authfackservice.currentUserValue;
+    // tslint:disable-next-line: deprecation
+    this.mensagensService.postMensagemPorId(chatId, this.mensagemParametroModelo).subscribe(
+      (res) => {
+      res.forEach(x => {
+        x.message = x.ds_corpo;
+        x.align = x.ds_remetente === currentUser.ds_numero_wp ? 'right' : 'left';
+        x.time = format(new Date(x.dt_criacao), 'HH:mm');
+        // x.profile = 'assets/images/users/avatar-4.jpg';
+        x.vl_status = x.vl_status;
+        x.name = x.ds_nome_contato_curto;
+        if (x.ds_mimetype !== null)
+        {
+          if (x.ds_mimetype.startsWith('image')){
+          x.isimage = true;
+          x. imageContent = this.sanitizer.bypassSecurityTrustResourceUrl(`data:${x.ds_mimetype};base64, ${x.ds_data}`);
+        }
+          else{
+            x.isfile = true;
+            x.fileContent = 'arquivo';
+          }
+        }
+      });
+      this.Messages = res;
+      this.perfectScroll.directiveRef.scrollToBottom(0, 1);
+    }, error => {
+      console.log('Errrou');
+    });
+  }
+
+  LerMensagensPorScroll = (chatId: string) => {
+    // tslint:disable-next-line: deprecation
+    this.mensagemParametroModelo = {
+      vl_Numero_da_Pagina : this.vl_Numero_da_Pagina,
+      vl_Tamanho_da_Pagina : this.vl_Tamanho_da_Pagina
+    };
+    // tslint:disable-next-line: deprecation
+    this.mensagensService.postMensagemPorId(chatId, this.mensagemParametroModelo).subscribe(
       (res) => {
       res.forEach(x => {
         x.message = x.ds_corpo;
@@ -110,29 +162,47 @@ export class IndexComponent implements OnInit {
           }
         }
       });
-      this.Messages = res;
-      this.componentRef.directiveRef.scrollToBottom();
+      res.forEach(element => {
+        this.Messages.unshift(element);
+      });
     }, error => {
       console.log('Errrou');
     });
   }
 
   // tslint:disable-next-line: variable-name
-  SetarUsuario(chat: Chat): any{
+  setarContato(chat: Chat): any{
+    let destinatario: Usuario;
+    let remetente: Usuario;
     this.usuarioService.getContatoPorId(chat.cd_remetente)
     // tslint:disable-next-line: deprecation
     .subscribe((res) => {
-      this.contato = res;
+      remetente = res;
+      this.usuarioService.getContatoPorId(chat.cd_destinatario)
+    // tslint:disable-next-line: deprecation
+    .subscribe((res2) => {
+      destinatario = res2;
+      const currentUser = this.authfackservice.currentUserValue;
+      if (currentUser.cd_codigo === destinatario.cd_codigo){
+        this.contato = remetente;
+      }else{
+        this.contato = destinatario;
+      }
     },
     error => {
-      console.log('Erro ao setar usuário');
+      console.log(error);
+    });
+    },
+    error => {
+      console.log(error);
     });
   }
 
   onCallParent = (chat: Chat) => {
+    this.vl_Numero_da_Pagina = 1;
     this.chatativo = true;
-    this.LerMensagensPorChat(chat);
-    this.SetarUsuario(chat);
+    this.setarContato(chat);
+    this.LerMensagensPorChat(chat.id);
     setTimeout(() => {
       this.componentRef.directiveRef.scrollToBottom();
  }, 3000);
@@ -147,6 +217,13 @@ export class IndexComponent implements OnInit {
            'ri-check-double-line': vl_status === 3,
            '': vl_status === 100,
           };
+ }
+
+ handleScroll(event): any{
+    console.log('chegou ao inicio do scroll');
+    this.vl_Numero_da_Pagina = this.vl_Numero_da_Pagina + 1;
+    console.log(this.vl_Numero_da_Pagina);
+    this.LerMensagensPorScroll(this.chatativoService.activeChatId);
  }
 
   onEnviar = () => {

@@ -52,8 +52,8 @@ export class ChatsComponent implements OnInit {
   }
 
   LerChats = () => {
-    // tslint:disable-next-line: deprecation
     const currentUser = this.authfackservice.currentUserValue;
+    // tslint:disable-next-line: deprecation
     this.chatsService.getAllChatId(currentUser.cd_codigo).subscribe((res) => {
       res.forEach(x => {
         x.id = x.cd_codigo;
