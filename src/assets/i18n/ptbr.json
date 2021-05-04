@@ -1,0 +1,581 @@
+{
+  "login": {
+      "title": "Entrar",
+      "message": "Entre para continuar no ReiChat.",
+      "form": {
+          "email": {
+              "label": "Email",
+              "placeholder": "Digite seu e-mail",
+              "validation": {
+                  "required": "O email é obrigatório.",
+                  "invalid": "Email inválido. Por favor, forneça um e-mail válido."
+              }
+          },
+          "Senha": {
+              "label": "Senha",
+              "placeholder": "Coloque sua senha",
+              "validation": {
+                  "required": "A senha é obrigatória."
+              }
+          },
+          "remebertext": "Lembrar",
+          "button": {
+              "text": "Entrar"
+          },
+          "forgotlink": "Esqueceu sua senha?"
+      },
+      "signuptext": "Não tem conta?",
+      "signuplink": "Inscreva-se agora"
+  },
+  "signup": {
+      "title": "Inscrever-se",
+      "message": "Obtenha sua conta ReiChat agora.",
+      "form": {
+          "username": {
+              "label": "Nome do usuário",
+              "placeholder": "Insira nome de usuário",
+              "validation": {
+                  "required": "Nome de usuário é obrigatório."
+              }
+          },
+          "email": {
+              "label": "Email",
+              "placeholder": "Digite seu e-mail",
+              "validation": {
+                  "required": "O email é obrigatório.",
+                  "invalid": "Email inválido. Forneça um e-mail válido."
+              }
+          },
+          "Senha": {
+              "label": "Senha",
+              "placeholder": "Coloque sua senha",
+              "validation": {
+                  "required": "A senha é obrigatória."
+              }
+          },
+          "button": {
+              "text": "Inscrever-se"
+          },
+          "notice": "Ao se cadastrar você concorda com o ReiChat",
+          "term-text": "Termos de uso"
+      },
+      "Entrartext": "Já tem uma conta ?",
+      "Entrarlink": "Entrar"
+  },
+  "RedefinirSenha": {
+      "title": "Redefinir senha",
+      "message": "Redefinir senha com ReiChat.",
+      "form": {
+          "email": {
+              "label": "E-mail",
+              "placeholder": "Digite seu e-mail",
+              "validation": {
+                  "required": "O email é obrigatório.",
+                  "invalid": "Email inválido. Forneça um e-mail válido."
+              }
+          },
+          "button": {
+              "text": "Redefinir"
+          }
+      },
+      "Entrartext": "Lembre se ?",
+      "Entrarlink": "Entrar"
+  },
+  "lockscreen": {
+      "title": "Tela de bloqueio",
+      "message": "Digite sua senha para desbloquear a tela!",
+      "name": "Patricia Smith",
+      "form": {
+          "Senha": {
+              "label": "Senha",
+              "placeholder": "Digite a senha",
+              "validation": {
+                  "required": "A senha é obrigatória."
+              }
+          },
+          "button": {
+              "text": "Desbloquear"
+          }
+      },
+      "Entrartext": "Você não ? Retorna",
+      "Entrarlink": "Entrar"
+  },
+  "chat": {
+      "tabs": {
+          "profile": {
+              "title": "Meu perfil",
+              "dropdown": {
+                  "edit": "Editar",
+                  "action": "Ação",
+                  "another": "Outra ação"
+              },
+              "user": "Patricia Smith",
+              "status": "Active",
+              "message": "If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual.",
+              "about": {
+                  "text": "Text",
+                  "name": {
+                      "text": "Name",
+                      "value": "Patricia Smith"
+                  },
+                  "email": {
+                      "text": "Email",
+                      "value": "abc@123.com"
+                  },
+                  "time": {
+                      "text": "Time",
+                      "value": "11:40 AM"
+                  },
+                  "location": {
+                      "text": "Location",
+                      "value": "California, USA"
+                  }
+              },
+              "attachedfile": {
+                  "text": "Attached Files",
+                  "file1": {
+                      "name": "Admin-A.zip",
+                      "size": "12.5 MB"
+                  },
+                  "file2": {
+                      "name": "Image-1.jpg",
+                      "size": "4.2 MB"
+                  },
+                  "file3": {
+                      "name": "Image-2.jpg",
+                      "size": "3.1 MB"
+                  },
+                  "file4": {
+                      "name": "Landing-A.zip",
+                      "size": "6.7 MB"
+                  },
+                  "dropdown": {
+                      "action": "Action",
+                      "another": "Outra ação",
+                      "delete": "Delete"
+                  }
+              }
+          },
+          "chats": {
+              "title": "Chats",
+              "search": {
+                  "placeholder": "Pesquisar mensagens de contatoss"
+              },
+              "users": {
+                  "1": "Patrick",
+                  "2": "Doris",
+                  "3": "Emily",
+                  "4": "Steve",
+                  "5": "Teresa"
+              },
+              "recent": {
+                  "title": "Mensagens Recentes",
+                  "userslist": {
+                      "user1": {
+                          "name": "Patrick Hendricks",
+                          "message": "Hey! there I'm available",
+                          "time": "05 min"
+                      },
+                      "user2": {
+                          "name": "Mark Messer",
+                          "message": "Images",
+                          "time": "12 min"
+                      },
+                      "user3": {
+                          "name": "General",
+                          "message": "This theme is awesome!",
+                          "time": "20 min"
+                      },
+                      "user4": {
+                          "name": "Doris Brown",
+                          "message": "Nice to meet you",
+                          "time": "10:12 AM"
+                      },
+                      "user5": {
+                          "name": "Designer",
+                          "message": "Next meeting tomorrow 10:00AM",
+                          "time": "12:01 PM"
+                      },
+                      "user6": {
+                          "name": "Steve Walker",
+                          "message": "Admin-A.zip",
+                          "time": "03:20 PM"
+                      },
+                      "user7": {
+                          "name": "Albert Rodarte",
+                          "message": "typing...",
+                          "time": "04:56 PM"
+                      },
+                      "user8": {
+                          "name": "Mirta George",
+                          "message": "Yeah everything is fine",
+                          "time": "12/07"
+                      },
+                      "user9": {
+                          "name": "Paul Haynes",
+                          "message": "Good morning",
+                          "time": "12/07"
+                      },
+                      "user10": {
+                          "name": "Jonathan Miller",
+                          "message": "Hi, How are you?",
+                          "time": "12/07"
+                      },
+                      "user11": {
+                          "name": "Ossie Wilson",
+                          "message": "I've finished it! See you so",
+                          "time": "11/07"
+                      },
+                      "user12": {
+                          "name": "Sara Muller",
+                          "message": "Wow that's great",
+                          "time": "11/07"
+                      }
+                  }
+              },
+              "modal": {
+                  "title": "Add Member",
+                  "form": {
+                      "name": {
+                          "label": "Name",
+                          "placeholder": "Enter name",
+                          "validation": {
+                              "required": "Name is mandatory."
+                          }
+                      },
+                      "buttons": {
+                          "close": "Close",
+                          "save": "Save"
+                      }
+                  }
+              }
+          },
+          "groups": {
+              "title": "Groups",
+              "search": {
+                  "placeholder": "Search groups..."
+              },
+              "list": {
+                  "general": "General",
+                  "reporting": "Reporting",
+                  "designers": "Designers",
+                  "developer": "Developers",
+                  "projectalpha": "Project-alpha",
+                  "snacks": "Snacks"
+              },
+              "modal": {
+                  "title": "Create New Group",
+                  "form": {
+                      "name": {
+                          "label": "Group Name",
+                          "placeholder": "Enter Group Name",
+                          "validaion": {
+                              "required": "Group name is mendatory."
+                          }
+                      },
+                      "members": {
+                          "label": "Group Members",
+                          "button": {
+                              "text": "Select Members"
+                          }
+                      },
+                      "description": {
+                          "label": "Description",
+                          "placeholder": "Enter description"
+                      },
+                      "button": {
+                          "close": "Close",
+                          "create": "Create Groups"
+                      }
+                  }
+              }
+          },
+          "contacts": {
+              "title": "Contacts",
+              "search": {
+                  "placeholder": "Perquisar Contatos..."
+              },
+              "list": {
+                  "A": {
+                      "text": "A",
+                      "name": "Albert Rodarte",
+                      "name2": "Allison Etter"
+                  },
+                  "C": {
+                      "text": "C",
+                      "name": "Craig Smiley"
+                  },
+                  "D": {
+                      "text": "D",
+                      "name": "Daniel Clay",
+                      "name2": "Doris Brown"
+                  },
+                  "H": {
+                      "text": "H",
+                      "name": "Hanah Mile"
+                  },
+                  "I": {
+                      "text": "I",
+                      "name": "Iris Wells"
+                  },
+                  "J": {
+                      "text": "J",
+                      "name": "Juan Flakes",
+                      "name2": "John Hall",
+                      "name3": "Joy Southern"
+                  },
+                  "M": {
+                      "text": "M",
+                      "name": "Mary Farmer",
+                      "name2": "Mark Messer",
+                      "name3": "Michael Hinton"
+                  },
+                  "O": {
+                      "text": "O",
+                      "name": "Ossie Wilson"
+                  },
+                  "P": {
+                      "text": "P",
+                      "name": "Phillis Griffin",
+                      "name2": "Paul Haynes"
+                  },
+                  "R": {
+                      "text": "R",
+                      "name": "Rocky Jackson"
+                  },
+                  "S": {
+                      "text": "S",
+                      "name": "Sara Muller",
+                      "name2": "Simon Velez",
+                      "name3": "Steve Walker"
+                  },
+                  "dropdown": {
+                      "item1": "Share",
+                      "item2": "Block",
+                      "item3": "Remove"
+                  }
+              },
+              "modal": {
+                  "title": "Add Contact",
+                  "form": {
+                      "email": {
+                          "label": "Email",
+                          "placeholder": "Enter Email"
+                      },
+                      "message": {
+                          "label": "Invatation Message",
+                          "placeholder": "Enter Message"
+                      },
+                      "button": {
+                          "close": "Close",
+                          "contact": "Invite Contact"
+                      }
+                  }
+              }
+          },
+          "settings": {
+              "title": "Settings",
+              "name": "Patrick Smith",
+              "status": {
+                  "text": "Available",
+                  "dropdown": {
+                      "available": "Available",
+                      "busy": "Busy"
+                  }
+              },
+              "info": {
+                  "title": "Personal Info",
+                  "name": {
+                      "text": "Name",
+                      "value": "Patricia Smith"
+                  },
+                  "email": {
+                      "text": "Email",
+                      "value": "abc@123.com"
+                  },
+                  "time": {
+                      "text": "Time",
+                      "value": "11:40 AM"
+                  },
+                  "location": {
+                      "text": "Location",
+                      "value": "California, USA"
+                  },
+                  "edit": "Edit"
+              },
+              "privacy": {
+                  "title": "Privacy",
+                  "photo": "Perfil foto",
+                  "dropdowntext": "Everyone",
+                  "dropdown": {
+                      "everyone": "Everyone",
+                      "selected": "Selected",
+                      "nobody": "Nobody"
+                  },
+                  "seen": "Last seen",
+                  "status": "Status",
+                  "receipt": "Read receipts",
+                  "groups": "Groups"
+              },
+              "security": {
+                  "title": "Security",
+                  "text": "Show security notification"
+              },
+              "help": {
+                  "title": "Help",
+                  "faqs": "FAQs",
+                  "contact": "Contact",
+                  "policy": "Terms & Privacy policy"
+              },
+              "modal": {
+                  "title": "Trocar Perfil",
+                  "form": {
+                      "profile": {
+                          "label": "Perfil"
+                      },
+                      "name": {
+                          "label": "Name",
+                          "placeholder": "Enter name",
+                          "validation": {
+                              "required": "Name is mendatory."
+                          }
+                      },
+                      "email": {
+                          "label": "Email",
+                          "placeholder": "Enter email",
+                          "validation": {
+                              "required": "O email é obrigatório.",
+                              "invalid": "Email inválido. Forneça um e-mail válido."
+                          }
+                      },
+                      "location": {
+                          "label": "Location",
+                          "placeholder": "Enter location",
+                          "validation": {
+                              "required": "Location is mendatory."
+                          }
+                      },
+                      "button": {
+                          "close": "Close",
+                          "save": "Save"
+                      }
+                  }
+              }
+          }
+      },
+      "profiledropdown": {
+          "profile": "Perfil",
+          "setting": "Configs",
+          "logout": "Sair"
+      },
+      "chatpanelheader": {
+          "name": "Lucas Fogaça",
+          "search": {
+              "placeholder": "Search.."
+          },
+          "dropdown": {
+              "viewprofile": "Ver Perfil",
+              "archive": "Archive",
+              "muted": "Muted",
+              "delete": "Delete"
+          }
+      },
+      "messages": {
+          "1": {
+              "name": "Dorsin Brown",
+              "message": "Good Morning",
+              "time": "10:00"
+          },
+          "2": {
+              "name": "Patricia Smith",
+              "message": "Good morning, How are you? What about our next meeting?",
+              "time": "10:02"
+          },
+          "3": {
+              "name": "Doris Brown",
+              "message": "Yeah everything is fine",
+              "message2": "& Next meeting tomorrow 10.00AM",
+              "time": "10:05"
+          },
+          "4": {
+              "name": "Patricia Smith",
+              "message": "Wow that's great",
+              "time": "10:06"
+          },
+          "5": {
+              "name": "Doris Brown",
+              "time": "10:09"
+          },
+          "6": {
+              "name": "Patricia Smith",
+              "time": "10:16"
+          },
+          "7": {
+              "name": "Doris Brown",
+              "message": "typing"
+          },
+          "dropdown": {
+              "copy": "Copiar",
+              "save": "Salvar",
+              "forward": "Avançar",
+              "delete": "Deletar"
+          },
+          "filedropdown": {
+              "share": "Compartilhar",
+              "delete": "Deletar"
+          }
+      },
+      "rightpanel": {
+          "name": "Dorsin Brown",
+          "status": "Ativo",
+          "message": "If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual.",
+          "about": {
+              "text": "Text",
+              "name": {
+                  "text": "Name",
+                  "value": "Dorsin Brown"
+              },
+              "email": {
+                  "text": "Email",
+                  "value": "abc@123.com"
+              },
+              "time": {
+                  "text": "Time",
+                  "value": "11:40 AM"
+              },
+              "location": {
+                  "text": "Location",
+                  "value": "California, USA"
+              }
+          },
+          "attachedfile": {
+              "text": "Attached Files",
+              "file1": {
+                  "name": "admin_v1.0.zip",
+                  "size": "12.5 MB"
+              },
+              "file2": {
+                  "name": "Image-1.jpg",
+                  "size": "4.2 MB"
+              },
+              "file3": {
+                  "name": "Image-2.jpg",
+                  "size": "3.1 MB"
+              },
+              "file4": {
+                  "name": "Landing-A.zip",
+                  "size": "6.7 MB"
+              },
+              "dropdown": {
+                  "action": "Action",
+                  "another": "Outra ação",
+                  "delete": "Delete"
+              }
+          }
+      }
+  },
+  "footer": {
+      "name": "ReiChat. Criado com ",
+      "text": " por Reitech"
+  }
+}

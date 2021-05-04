@@ -54,6 +54,7 @@ export class IndexComponent implements OnInit {
 
 
   listLang = [
+    { text: 'Português', flag: 'assets/images/flags/brasil.png', lang: 'ptbr' },
     { text: 'English', flag: 'assets/images/flags/us.jpg', lang: 'en' },
     { text: 'Spanish', flag: 'assets/images/flags/spain.jpg', lang: 'es' },
     { text: 'German', flag: 'assets/images/flags/germany.jpg', lang: 'de' },
@@ -92,7 +93,9 @@ export class IndexComponent implements OnInit {
           imageContent : this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${x.ds_data}`)
         };
         this.Messages.push(this.MensagemRecebida);
-        this.perfectScroll.directiveRef.scrollToBottom(0, 1);
+        setTimeout(() => {
+      this.perfectScroll.directiveRef.scrollToBottom(0, 1);
+   }, 1000);
       }, error => {
         console.log('Errrou');
       });
