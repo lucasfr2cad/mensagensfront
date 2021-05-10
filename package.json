@@ -30,7 +30,6 @@
     "devextreme-angular": "20.2.7",
     "file-saver": "^2.0.5",
     "firebase": "^7.18.0",
-    "ngx-emoji-picker": "^0.1.6",
     "ngx-owl-carousel-o": "^4.0.0",
     "ngx-perfect-scrollbar": "^9.0.0",
     "ngx-toastr": "^13.2.1",
