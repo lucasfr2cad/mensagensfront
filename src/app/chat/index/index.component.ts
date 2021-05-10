@@ -7,10 +7,10 @@ import { AuthenticationService } from '../../core/services/auth.service';
 import { AuthfakeauthenticationService } from '../../core/services/authfake.service';
 import {EventEmitterService} from '../../core/services/eventemitter.service';
 import { MensagensService } from '../../core/services/mensagens.service';
-import { UsuarioService } from '../../core/services/usuarios.service';
 import { format } from 'date-fns';
 import { PerfectScrollbarComponent, PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
-import { Contatos } from 'src/app/core/models/contato.models';
+import { Contato } from 'src/app/core/models/contato.models';
+import { Linha } from 'src/app/core/models/linha.models';
 import {Mensagem} from '../../core/models/mensagem.models';
 import { Chat } from 'src/app/core/models/chat.models';
 import { Subscription } from 'rxjs';
@@ -19,6 +19,8 @@ import { saveAs } from 'file-saver';
 import { MensagemParametroModelo } from '../../core/models/mensagemParametro.Models';
 import { ChatativoService } from 'src/app/core/services/chatativo.service';
 import { Usuario } from 'src/app/core/models/usuario.models';
+import { ContatoService } from 'src/app/core/services/contato.service';
+import {LinhaService} from 'src/app/core/services/linha.service';
 
 
 
@@ -38,7 +40,7 @@ export class IndexComponent implements OnInit {
   MensagemEnviar: Message;
   MensagemRecebida: Message;
   nomeContatoBar = '';
-  contato: Contatos;
+  contato: Contato;
   numeroEnviar: string;
   sub: Subscription;
   popupVisible = false;
@@ -49,8 +51,10 @@ export class IndexComponent implements OnInit {
   // tslint:disable-next-line: variable-name
   vl_Numero_da_Pagina = 1;
   // tslint:disable-next-line: variable-name
-  vl_Tamanho_da_Pagina = 50;
+  vl_Tamanho_da_Pagina = 10;
   mensagemParametroModelo: MensagemParametroModelo;
+  primeiraVezCarregando = true;
+  linhaContato: Linha;
 
 
   listLang = [
@@ -73,7 +77,8 @@ export class IndexComponent implements OnInit {
   constructor(private authFackservice: AuthfakeauthenticationService, private authService: AuthenticationService,
               private router: Router, public translate: TranslateService, private mensagensService: MensagensService,
               private sanitizer: DomSanitizer, private chatativoService: ChatativoService,
-              private authfackservice: AuthfakeauthenticationService, private usuarioService: UsuarioService) { }
+              private authfackservice: AuthfakeauthenticationService, private contatoService: ContatoService,
+              private linhaService: LinhaService) { }
 
   ngOnInit(): void {
     this.lang = this.translate.currentLang;
@@ -83,121 +88,39 @@ export class IndexComponent implements OnInit {
     const currentUser = this.authfackservice.currentUserValue;
     this.sub = EventEmitterService.get('NovaMensagem').subscribe(
       (x) => {
-        this.MensagemRecebida = {
-          message : x.ds_corpo,
-          align : x.ds_remetente === currentUser.ds_numero_wp ? 'right' : 'left',
-          time : format(new Date(x.dt_criacao), 'HH:mm'),
-          vl_status : x.vl_status,
-          name : x.ds_nome_contato_curto,
-          isimage : x.st_midia && x.ds_mimetype === 'image/jpeg' ? true : false,
-          imageContent : this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${x.ds_data}`)
-        };
-        this.Messages.push(this.MensagemRecebida);
+        const teste = [];
+        teste.push(x);
+        this.Messages.push(this.mensagensService.bindarMensagens(teste)[0]);
         setTimeout(() => {
       this.perfectScroll.directiveRef.scrollToBottom(0, 1);
    }, 1000);
-      }, error => {
-        console.log('Errrou');
       });
   }
 
-  LerMensagensPorChat = (chatId: string) => {
-    // tslint:disable-next-line: deprecation
-    this.mensagemParametroModelo = {
-      vl_Numero_da_Pagina : this.vl_Numero_da_Pagina,
-      vl_Tamanho_da_Pagina : this.vl_Tamanho_da_Pagina
-    };
-    const currentUser = this.authfackservice.currentUserValue;
-    // tslint:disable-next-line: deprecation
-    this.mensagensService.postMensagemPorId(chatId, this.mensagemParametroModelo).subscribe(
-      (res) => {
-      res.forEach(x => {
-        x.message = x.ds_corpo;
-        x.align = x.ds_remetente === currentUser.ds_numero_wp ? 'right' : 'left';
-        x.time = format(new Date(x.dt_criacao), 'HH:mm');
-        // x.profile = 'assets/images/users/avatar-4.jpg';
-        x.vl_status = x.vl_status;
-        x.name = x.ds_nome_contato_curto;
-        if (x.ds_mimetype !== null)
-        {
-          if (x.ds_mimetype.startsWith('image')){
-          x.isimage = true;
-          x. imageContent = this.sanitizer.bypassSecurityTrustResourceUrl(`data:${x.ds_mimetype};base64, ${x.ds_data}`);
-        }
-          else{
-            x.isfile = true;
-            x.fileContent = 'arquivo';
-          }
-        }
+   LerMensagensPorChat = async (chatId: string) => {
+      this.mensagensService.lerMensagensPorChat(chatId, this.vl_Numero_da_Pagina, this.vl_Tamanho_da_Pagina).then(res => {
+        this.Messages = res;
       });
-      this.Messages = res;
-      this.perfectScroll.directiveRef.scrollToBottom(0, 1);
-    }, error => {
-      console.log('Errrou');
-    });
-  }
+    }
 
   LerMensagensPorScroll = (chatId: string) => {
-    // tslint:disable-next-line: deprecation
-    this.mensagemParametroModelo = {
-      vl_Numero_da_Pagina : this.vl_Numero_da_Pagina,
-      vl_Tamanho_da_Pagina : this.vl_Tamanho_da_Pagina
-    };
-    // tslint:disable-next-line: deprecation
-    this.mensagensService.postMensagemPorId(chatId, this.mensagemParametroModelo).subscribe(
-      (res) => {
-      res.forEach(x => {
-        x.message = x.ds_corpo;
-        x.align = x.st_de_mim ? 'right' : 'left';
-        x.time = format(new Date(x.dt_criacao), 'HH:mm');
-        // x.profile = 'assets/images/users/avatar-4.jpg';
-        x.vl_status = x.vl_status;
-        x.name = x.ds_nome_contato_curto;
-        if (x.ds_mimetype !== null)
-        {
-          if (x.ds_mimetype.startsWith('image')){
-          x.isimage = true;
-          x. imageContent = this.sanitizer.bypassSecurityTrustResourceUrl(`data:${x.ds_mimetype};base64, ${x.ds_data}`);
-        }
-          else{
-            x.isfile = true;
-            x.fileContent = 'arquivo';
-          }
-        }
+    if (!this.primeiraVezCarregando){
+        this.mensagensService.lerMensagensPorChatOrdenada(chatId, this.vl_Numero_da_Pagina, this.vl_Tamanho_da_Pagina).then(res => {
+          res.forEach(element => {
+            this.Messages.unshift(element);
+        });
       });
-      res.forEach(element => {
-        this.Messages.unshift(element);
-      });
-    }, error => {
-      console.log('Errrou');
-    });
-  }
+    }
+    this.primeiraVezCarregando = false;
+}
 
   // tslint:disable-next-line: variable-name
   setarContato(chat: Chat): any{
-    let destinatario: Usuario;
-    let remetente: Usuario;
-    this.usuarioService.getContatoPorId(chat.cd_remetente)
-    // tslint:disable-next-line: deprecation
-    .subscribe((res) => {
-      remetente = res;
-      this.usuarioService.getContatoPorId(chat.cd_destinatario)
-    // tslint:disable-next-line: deprecation
-    .subscribe((res2) => {
-      destinatario = res2;
-      const currentUser = this.authfackservice.currentUserValue;
-      if (currentUser.cd_codigo === destinatario.cd_codigo){
-        this.contato = remetente;
-      }else{
-        this.contato = destinatario;
-      }
-    },
-    error => {
-      console.log(error);
+    this.contatoService.getContatoID(chat.cd_contato).subscribe(res => {
+      this.contato = res;
     });
-    },
-    error => {
-      console.log(error);
+    this.linhaService.getLinhaID(chat.cd_contato).subscribe(res => {
+      this.linhaContato = res;
     });
   }
 
@@ -223,14 +146,12 @@ export class IndexComponent implements OnInit {
  }
 
  handleScroll(event): any{
-    console.log('chegou ao inicio do scroll');
     this.vl_Numero_da_Pagina = this.vl_Numero_da_Pagina + 1;
-    console.log(this.vl_Numero_da_Pagina);
     this.LerMensagensPorScroll(this.chatativoService.activeChatId);
  }
 
   onEnviar = () => {
-      let numeroFinal = this.contato.ds_numero_wp;
+      let numeroFinal = this.linhaContato.ds_numero_wp;
       const texto = this.textoatual;
       this.textoatual = null;
       numeroFinal = numeroFinal.replace('@c.us', '');
@@ -244,7 +165,7 @@ export class IndexComponent implements OnInit {
       this.MensagemRecebida = {
         message : texto,
         align : 'right',
-        time : format(new Date(), 'HH:mm'),
+        time : format(new Date(), 'dd:MM HH:mm'),
       };
       this.Messages.push(this.MensagemRecebida);
       setTimeout(() => {
@@ -305,7 +226,7 @@ export class IndexComponent implements OnInit {
       let arquivoBi: any;
       arquivoBi = reader.result;
       this.binario = arquivoBi;
-      let numeroFinal = this.contato.ds_numero_wp;
+      let numeroFinal = this.linhaContato.ds_numero_wp;
       numeroFinal = numeroFinal.replace('@c.us', '');
       const mensagem = {
         ds_data : this.binario.substr(this.binario.indexOf(',') + 1),

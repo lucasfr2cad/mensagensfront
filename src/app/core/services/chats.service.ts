@@ -29,6 +29,16 @@ export class ChatsService {
     return this.http.get<Chat>(this.chatUrl + `id?cd_codigo=` + cd_codigo);
   }
 
+  // tslint:disable-next-line: variable-name
+  getChatsPorEmpresa(cd_codigo: string): Observable<Chat[]>{
+    return this.http.get<Chat[]>(this.chatUrl + `BuscaChatPorEmpresa/id?cd_codigo=` + cd_codigo);
+  }
+
+    // tslint:disable-next-line: variable-name
+  getChatsPorAtendente(cd_codigo: string): Observable<Chat[]>{
+      return this.http.get<Chat[]>(this.chatUrl + `BuscaChatPorAtendente/id?cd_codigo=` + cd_codigo);
+}
+
 
 }
 

@@ -10,6 +10,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import {ChatativoService} from '../../core/services/chatativo.service';
 import {EventEmitterService} from '../../core/services/eventemitter.service';
 import {Mensagem} from '../../core/models/mensagem.models';
+import { AuthfakeauthenticationService } from './authfake.service';
 
 
 
@@ -21,7 +22,7 @@ export class SignalRService {
   connectionEstablished$ = new BehaviorSubject<boolean>(false);
 
 
-   constructor(private chatativo: ChatativoService)
+   constructor(private chatativo: ChatativoService, private authfackservice: AuthfakeauthenticationService)
   {
     this.createConnection();
     this.registerOnServerEvents();
@@ -29,8 +30,9 @@ export class SignalRService {
   }
 
    private createConnection(): any {
+      const currentUser = this.authfackservice.currentUserValue;
       const user = {
-        name: '555195817896@c.us',
+        name: currentUser.ds_numero_wp,
         key: 12121
         };
       this.hubConnection = new HubConnectionBuilder()

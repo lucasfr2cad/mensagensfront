@@ -3,7 +3,6 @@ import { OwlOptions } from 'ngx-owl-carousel-o';
 import { TranslateService } from '@ngx-translate/core';
 import { Chats } from './chats.model';
 import {Chat} from '../../../core/models/chat.models';
-import {Contatos} from '../../../core/models/contato.models';
 import { ChatsService } from '../../../core/services/chats.service';
 import {ChatativoService} from '../../../core/services/chatativo.service';
 import { SignalRService } from '../../../core/services/signalR.service';
@@ -26,7 +25,6 @@ import { AuthfakeauthenticationService } from 'src/app/core/services/authfake.se
 export class ChatsComponent implements OnInit {
   @Output() callParent = new EventEmitter<any>();
   chat: Chats[];
-  contato: Contatos;
   sub: Subscription;
 
 

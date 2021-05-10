@@ -19,4 +19,8 @@ export class Usuario {
   ds_numero_wp?:	string;
   // tslint:disable-next-line: variable-name
   ds_token?: string;
+  // tslint:disable-next-line: variable-name
+  ds_perfil_acesso?: string;
+   // tslint:disable-next-line: variable-name
+  cd_empresa?: string;
 }

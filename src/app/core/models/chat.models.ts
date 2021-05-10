@@ -15,7 +15,6 @@ export class Chat {
   cd_remetente?:	string;
   // tslint:disable-next-line: variable-name
   ds_ultima_msg?:	string;
-
   // tslint:disable-next-line: variable-name
   st_midia?: boolean;
   // tslint:disable-next-line: variable-name
@@ -26,6 +25,11 @@ export class Chat {
   ds_nome_do_arquivo?: string;
   // tslint:disable-next-line: variable-name
   cd_destinatario?: string;
-
   id?: string;
+  // tslint:disable-next-line: variable-name
+  cd_contato?: string;
+  // tslint:disable-next-line: variable-name
+  cd_empresa?: string;
+  // tslint:disable-next-line: variable-name
+  cd_atendente?: string;
 }
