@@ -23,7 +23,6 @@ import { AuthfakeauthenticationService } from 'src/app/core/services/authfake.se
  * Tab-chat component
  */
 export class ChatsComponent implements OnInit {
-  @Output() callParent = new EventEmitter<any>();
   chat: Chats[];
   sub: Subscription;
 
@@ -52,17 +51,33 @@ export class ChatsComponent implements OnInit {
   LerChats = () => {
     const currentUser = this.authfackservice.currentUserValue;
     // tslint:disable-next-line: deprecation
-    this.chatsService.getAllChatId(currentUser.cd_codigo).subscribe((res) => {
+    if (currentUser.ds_perfil_acesso === 'atendente'){
+      this.chatsService.getCM_BuscarPorEmpresaComESemAtendente(currentUser.cd_empresa, currentUser.cd_codigo).subscribe((res) => {
+        res.forEach(x => {
+          // x.id = x.cd_codigo;
+          x.name = x.ds_nome;
+          x.cd_chat = x.cd_chat;
+          x.cd_remetente = x.cd_remetente;
+          x.lastMessage = x.ds_ultima_msg;
+          x.unRead = x.cd_atendente === '00000000-0000-0000-0000-000000000000' ? 'Não atibuído' : '';
+          x.time = format(new Date(x.dt_atualizacao), 'HH:mm');
+        });
+        this.chat = res;
+      });
+    }else{
+      this.chatsService.getChatsPorEmpresa(currentUser.cd_empresa).subscribe((res) => {
       res.forEach(x => {
-        x.id = x.cd_codigo;
+        // x.id = x.cd_codigo;
         x.name = x.ds_nome;
         x.cd_chat = x.cd_chat;
         x.cd_remetente = x.cd_remetente;
         x.lastMessage = x.ds_ultima_msg;
+        x.unRead = x.cd_atendente === '00000000-0000-0000-0000-000000000000' ? 'Não atibuído' : x.ds_nome_atendente;
         x.time = format(new Date(x.dt_atualizacao), 'HH:mm');
       });
       this.chat = res;
     });
+    }
   }
 
   /**
@@ -70,10 +85,16 @@ export class ChatsComponent implements OnInit {
    */
   // tslint:disable-next-line: typedef
   showChat = (event: Chat) => {
+    const currentUser = this.authfackservice.currentUserValue;
+    if (currentUser.ds_perfil_acesso === 'atendente'){
+      this.chatsService.postAtribuiAtendente(event.cd_codigo, currentUser.cd_codigo).subscribe(res => {
+      this.LerChats();
+    });
+    }
     this.chatativo.nomeia(event.cd_codigo);
-    this.callParent.emit(event);
+    EventEmitterService.get('LerChat').emit(event);
     setTimeout(() => {
       document.getElementById('chat-room').classList.add('user-chat-show');
- }, 3000);
+ }, 1000);
   }
 }

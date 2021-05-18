@@ -13,6 +13,7 @@ import { ContactsComponent } from './contacts/contacts.component';
 import { GroupsComponent } from './groups/groups.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -29,7 +30,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgbTooltipModule,
     NgbModalModule,
     NgbCollapseModule,
-    TranslateModule
+    TranslateModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   exports: [ProfileComponent, ChatsComponent, ContactsComponent, GroupsComponent, SettingsComponent],
   providers: [

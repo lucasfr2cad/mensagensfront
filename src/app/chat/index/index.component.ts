@@ -15,10 +15,8 @@ import {Mensagem} from '../../core/models/mensagem.models';
 import { Chat } from 'src/app/core/models/chat.models';
 import { Subscription } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
-import { saveAs } from 'file-saver';
 import { MensagemParametroModelo } from '../../core/models/mensagemParametro.Models';
 import { ChatativoService } from 'src/app/core/services/chatativo.service';
-import { Usuario } from 'src/app/core/models/usuario.models';
 import { ContatoService } from 'src/app/core/services/contato.service';
 import {LinhaService} from 'src/app/core/services/linha.service';
 
@@ -43,6 +41,7 @@ export class IndexComponent implements OnInit {
   contato: Contato;
   numeroEnviar: string;
   sub: Subscription;
+  sub2: Subscription;
   popupVisible = false;
   binario: string;
   loadingVisible = false;
@@ -86,6 +85,15 @@ export class IndexComponent implements OnInit {
    ds_nome: 'Selecione um contato'
   };
     const currentUser = this.authfackservice.currentUserValue;
+    this.sub2 = EventEmitterService.get('LerChat').subscribe((event) => {
+      this.vl_Numero_da_Pagina = 1;
+      this.chatativo = true;
+      this.setarContato(event);
+      this.LerMensagensPorChat(event.cd_codigo);
+      setTimeout(() => {
+        this.componentRef.directiveRef.scrollToBottom();
+   }, 3000);
+    });
     this.sub = EventEmitterService.get('NovaMensagem').subscribe(
       (x) => {
         const teste = [];
@@ -119,20 +127,12 @@ export class IndexComponent implements OnInit {
     this.contatoService.getContatoID(chat.cd_contato).subscribe(res => {
       this.contato = res;
     });
-    this.linhaService.getLinhaID(chat.cd_contato).subscribe(res => {
+    this.linhaService.getLinhaPeloDono(chat.cd_contato).subscribe(res => {
       this.linhaContato = res;
     });
   }
 
-  onCallParent = (chat: Chat) => {
-    this.vl_Numero_da_Pagina = 1;
-    this.chatativo = true;
-    this.setarContato(chat);
-    this.LerMensagensPorChat(chat.id);
-    setTimeout(() => {
-      this.componentRef.directiveRef.scrollToBottom();
- }, 3000);
-  }
+
 
   // tslint:disable-next-line: variable-name
   getClass = (vl_status) => {
@@ -167,7 +167,7 @@ export class IndexComponent implements OnInit {
         align : 'right',
         time : format(new Date(), 'dd:MM HH:mm'),
       };
-      this.Messages.push(this.MensagemRecebida);
+      // this.Messages.push(this.MensagemRecebida);
       setTimeout(() => {
         this.componentRef.directiveRef.scrollToBottom();
    }, 500);

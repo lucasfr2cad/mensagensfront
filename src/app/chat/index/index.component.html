@@ -68,7 +68,7 @@
             <i class="ri-message-3-line"></i>
           </a>
         </li>
-        <li class="nav-item" ngbTooltip="Grupos">
+        <!-- <li class="nav-item" ngbTooltip="Grupos">
           <a
             class="nav-link"
             id="pills-groups-tab"
@@ -78,7 +78,7 @@
           >
             <i class="ri-group-line"></i>
           </a>
-        </li>
+        </li> -->
         <li class="nav-item" ngbTooltip="Contatos" placement="top">
           <a
             class="nav-link"
@@ -90,7 +90,7 @@
             <i class="ri-contacts-line"></i>
           </a>
         </li>
-        <li class="nav-item" ngbTooltip="Configurações">
+        <!-- <li class="nav-item" ngbTooltip="Configurações">
           <a
             class="nav-link"
             id="pills-setting-tab"
@@ -100,10 +100,15 @@
           >
             <i class="ri-settings-2-line"></i>
           </a>
-        </li>
+        </li> -->
 
         <li
-          class="nav-item dropdown profile-user-dropdown d-inline-block d-lg-none"
+          class="
+            nav-item
+            dropdown
+            profile-user-dropdown
+            d-inline-block d-lg-none
+          "
           ngbDropdown
           placement="top"
         >
@@ -278,6 +283,7 @@
         role="tabpanel"
         aria-labelledby="pills-contacts-tab"
         *ngIf="activetab === 4"
+        (callParent)="onCallParent($event)"
       >
         <app-contacts></app-contacts>
       </div>
@@ -322,7 +328,12 @@
                 </div> -->
                 <div class="avatar-xs">
                   <span
-                    class="avatar-title rounded-circle bg-soft-primary text-primary"
+                    class="
+                      avatar-title
+                      rounded-circle
+                      bg-soft-primary
+                      text-primary
+                    "
                   >
                     {{ (contato.ds_nome | translate).charAt(0) }}
                   </span>
@@ -333,7 +344,13 @@
                       {{ contato.ds_nome }}</a
                     >
                     <i
-                      class="ri-record-circle-fill font-size-10 text-success d-inline-block ml-1"
+                      class="
+                        ri-record-circle-fill
+                        font-size-10
+                        text-success
+                        d-inline-block
+                        ml-1
+                      "
                     ></i>
                   </h5>
                 </div>
@@ -354,7 +371,11 @@
                       <i class="ri-search-line"></i>
                     </button>
                     <div
-                      class="dropdown-menu p-0 dropdown-menu-right dropdown-menu-md"
+                      class="
+                        dropdown-menu
+                        p-0
+                        dropdown-menu-right dropdown-menu-md
+                      "
                       ngbDropdownMenu
                     >
                       <div class="search-box p-2">
@@ -398,7 +419,11 @@
                       ngbDropdownMenu
                     >
                       <a
-                        class="dropdown-item d-block d-lg-none user-profile-show"
+                        class="
+                          dropdown-item
+                          d-block d-lg-none
+                          user-profile-show
+                        "
                         (click)="showUserProfile()"
                         href="javascript: void(0);"
                         >{{
@@ -515,7 +540,11 @@
                                       "chat.messages.dropdown.copy" | translate
                                     }}
                                     <i
-                                      class="ri-file-copy-line float-right text-muted"
+                                      class="
+                                        ri-file-copy-line
+                                        float-right
+                                        text-muted
+                                      "
                                     ></i
                                   ></a>
                                   <a class="dropdown-item" href="#"
@@ -523,7 +552,11 @@
                                       "chat.messages.dropdown.save" | translate
                                     }}
                                     <i
-                                      class="ri-save-line float-right text-muted"
+                                      class="
+                                        ri-save-line
+                                        float-right
+                                        text-muted
+                                      "
                                     ></i
                                   ></a>
                                   <a class="dropdown-item" href="#"
@@ -532,7 +565,11 @@
                                         | translate
                                     }}
                                     <i
-                                      class="ri-chat-forward-line float-right text-muted"
+                                      class="
+                                        ri-chat-forward-line
+                                        float-right
+                                        text-muted
+                                      "
                                     ></i
                                   ></a>
                                   <a class="dropdown-item" href="#"
@@ -541,7 +578,11 @@
                                         | translate
                                     }}
                                     <i
-                                      class="ri-delete-bin-line float-right text-muted"
+                                      class="
+                                        ri-delete-bin-line
+                                        float-right
+                                        text-muted
+                                      "
                                     ></i
                                   ></a>
                                 </div>
@@ -555,7 +596,13 @@
                         <div class="media align-items-center">
                           <div class="avatar-sm mr-3">
                             <div
-                              class="avatar-title bg-soft-primary text-primary rounded font-size-20"
+                              class="
+                                avatar-title
+                                bg-soft-primary
+                                text-primary
+                                rounded
+                                font-size-20
+                              "
                             >
                               <i class="ri-file-text-fill"></i>
                             </div>
@@ -604,7 +651,11 @@
                                         | translate
                                     }}
                                     <i
-                                      class="ri-share-line float-right text-muted"
+                                      class="
+                                        ri-share-line
+                                        float-right
+                                        text-muted
+                                      "
                                     ></i
                                   ></a>
                                   <a class="dropdown-item" href="#"
@@ -613,7 +664,11 @@
                                         | translate
                                     }}
                                     <i
-                                      class="ri-delete-bin-line float-right text-muted"
+                                      class="
+                                        ri-delete-bin-line
+                                        float-right
+                                        text-muted
+                                      "
                                     ></i
                                   ></a>
                                 </div>
@@ -764,7 +819,14 @@
                       <i class="ri-emotion-happy-line"></i>
                     </button> -->
                     <i
-                      class="ri-emotion-happy-line btn btn-link text-decoration-none font-size-16 btn-lg waves-effect"
+                      class="
+                        ri-emotion-happy-line
+                        btn btn-link
+                        text-decoration-none
+                        font-size-16
+                        btn-lg
+                        waves-effect
+                      "
                       (click)="toggled = !toggled"
                       [(emojiPickerIf)]="toggled"
                       [emojiPickerDirection]="
@@ -777,7 +839,13 @@
                     <button
                       mat-button
                       type="button"
-                      class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect"
+                      class="
+                        btn btn-link
+                        text-decoration-none
+                        font-size-16
+                        btn-lg
+                        waves-effect
+                      "
                       data-toggle="tooltip"
                       data-placement="top"
                       ngbTooltip="Attached File"
@@ -791,7 +859,13 @@
                     <button
                       type="submit"
                       (click)="onEnviar()"
-                      class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
+                      class="
+                        btn btn-primary
+                        font-size-16
+                        btn-lg
+                        chat-send
+                        waves-effect waves-light
+                      "
                     >
                       <i class="ri-send-plane-2-fill"></i>
                     </button>

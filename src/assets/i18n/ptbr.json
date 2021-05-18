@@ -11,7 +11,7 @@
                   "invalid": "Email inválido. Por favor, forneça um e-mail válido."
               }
           },
-          "Senha": {
+          "password": {
               "label": "Senha",
               "placeholder": "Coloque sua senha",
               "validation": {
@@ -291,7 +291,7 @@
               }
           },
           "contacts": {
-              "title": "Contacts",
+              "title": "Contatos",
               "search": {
                   "placeholder": "Perquisar Contatos..."
               },
@@ -350,25 +350,33 @@
                       "name3": "Steve Walker"
                   },
                   "dropdown": {
-                      "item1": "Share",
-                      "item2": "Block",
-                      "item3": "Remove"
+                      "item1": "Conversar",
+                      "item2": "Bloquear",
+                      "item3": "Remover"
                   }
               },
               "modal": {
-                  "title": "Add Contact",
+                  "title": "Adicoinar Contato",
                   "form": {
                       "email": {
                           "label": "Email",
                           "placeholder": "Enter Email"
                       },
+                      "wp": {
+                        "label": "Número do WhatsApp",
+                        "placeholder": "Digite o número do WhatsApp"
+                    },
+                    "nome": {
+                      "label": "Nome do Contato",
+                      "placeholder": "Digite o nome do contato"
+                  },
                       "message": {
                           "label": "Invatation Message",
                           "placeholder": "Enter Message"
                       },
                       "button": {
-                          "close": "Close",
-                          "contact": "Invite Contact"
+                          "close": "Fechar",
+                          "contact": "Adicionar Contato"
                       }
                   }
               }
@@ -477,7 +485,7 @@
               "viewprofile": "Ver Perfil",
               "archive": "Archive",
               "muted": "Muted",
-              "delete": "Delete"
+              "delete": "Deletar"
           }
       },
       "messages": {

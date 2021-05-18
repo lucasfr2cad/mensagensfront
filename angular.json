@@ -45,6 +45,7 @@
                 }
               ],
               "optimization": true,
+              "allowedCommonJsDependencies": ["devextreme"],
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,

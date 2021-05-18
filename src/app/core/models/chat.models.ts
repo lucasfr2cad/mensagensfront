@@ -32,4 +32,6 @@ export class Chat {
   cd_empresa?: string;
   // tslint:disable-next-line: variable-name
   cd_atendente?: string;
+  // tslint:disable-next-line: variable-name
+  cd_codigo_chat?: string;
 }

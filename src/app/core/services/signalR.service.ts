@@ -32,7 +32,7 @@ export class SignalRService {
    private createConnection(): any {
       const currentUser = this.authfackservice.currentUserValue;
       const user = {
-        name: currentUser.ds_numero_wp,
+        name: currentUser.cd_empresa,
         key: 12121
         };
       this.hubConnection = new HubConnectionBuilder()

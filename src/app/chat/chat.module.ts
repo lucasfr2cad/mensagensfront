@@ -35,7 +35,7 @@ import {  NgxEmojiPickerModule  } from 'ngx-emoji-picker';
     DevExtremeModule,
     DxPopupModule,
     DxLoadPanelModule,
-    NgxEmojiPickerModule
+    NgxEmojiPickerModule,
   ],
   exports: [ProfileDetailComponent]
 })

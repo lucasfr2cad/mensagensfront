@@ -16,4 +16,7 @@ export interface Chats {
     ds_ultima_msg?: string;
     ds_remetente?: string;
     dt_atualizacao?: string;
+    cd_atendente?: string;
+    ds_nome_atendente?: string;
+    cd_codigo_chat?: string;
 }

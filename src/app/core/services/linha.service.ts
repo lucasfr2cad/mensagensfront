@@ -15,4 +15,9 @@ export class LinhaService {
    getLinhaID(cd_codigo: any): Observable<Linha>{
     return this.http.get<Linha>(this.linhaUrl + cd_codigo);
   }
+
+   // tslint:disable-next-line: variable-name
+   getLinhaPeloDono(cd_codigo: any): Observable<Linha>{
+    return this.http.get<Linha>(this.linhaUrl + 'CM_BuscarPeloDono/id?cd_codigo=' + cd_codigo);
+  }
 }

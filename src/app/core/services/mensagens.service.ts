@@ -43,7 +43,7 @@ export class MensagensService {
       const currentUser = this.authfackservice.currentUserValue;
       res.forEach(x => {
         x.message = x.ds_corpo;
-        x.align = x.ds_remetente === currentUser.ds_numero_wp ? 'right' : 'left';
+        x.align = x.st_de_mim ? 'right' : 'left';
         x.time = format(new Date(x.dt_criacao), 'dd/MM HH:mm');
         // x.profile = 'assets/images/users/avatar-4.jpg';
         x.vl_status = x.vl_status;
