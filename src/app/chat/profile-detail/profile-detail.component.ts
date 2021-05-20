@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Contato } from 'src/app/core/models/contato.models';
+import { EventEmitterService } from 'src/app/core/services/eventemitter.service';
 
 @Component({
   selector: 'app-profile-detail',
@@ -10,8 +13,16 @@ import { Component, OnInit } from '@angular/core';
  * Profile-detail component
  */
 export class ProfileDetailComponent implements OnInit {
-
-  constructor() { }
+  sub3: Subscription;
+  contato: Contato;
+  constructor() {
+    this.contato = {
+      ds_nome: 'Selecione um contato'
+     };
+    this.sub3 = EventEmitterService.get('AbreContato').subscribe((contato) => {
+     this.contato = contato;
+    });
+   }
 
   ngOnInit(): void {
   }

@@ -396,7 +396,7 @@
                   <button
                     type="button"
                     class="btn nav-btn user-profile-show"
-                    (click)="showUserProfile()"
+                    (click)="showUserProfile(contato)"
                   >
                     <i class="ri-user-2-line"></i>
                   </button>
@@ -432,7 +432,7 @@
                         }}
                         <i class="ri-user-2-line float-right text-muted"></i
                       ></a>
-                      <a class="dropdown-item" href="#"
+                      <!-- <a class="dropdown-item" href="#"
                         >{{
                           "chat.chatpanelheader.dropdown.archive" | translate
                         }}
@@ -445,8 +445,8 @@
                         <i
                           class="ri-volume-mute-line float-right text-muted"
                         ></i
-                      ></a>
-                      <a class="dropdown-item" href="#"
+                      ></a> -->
+                      <a (click)="deleteChat()" class="dropdown-item" href="#"
                         >{{
                           "chat.chatpanelheader.dropdown.delete" | translate
                         }}

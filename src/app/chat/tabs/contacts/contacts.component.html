@@ -87,6 +87,76 @@
     </ng-template>
     <!-- End Add contact Modal -->
 
+    <!-- Start Edit contact Modal -->
+    <ng-template #content2 let-modal>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5
+            class="modal-title font-size-16"
+            id="addContact-exampleModalLabel"
+          >
+            {{ "chat.tabs.contacts.modal.titleEdit" | translate }}
+          </h5>
+          <button
+            type="button"
+            class="close"
+            (click)="modal.dismiss('Cross click')"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="form-group mb-4">
+            <label for="addcontactemail-input">{{
+              "chat.tabs.contacts.modal.form.wp.label" | translate
+            }}</label>
+            <input
+              #teste
+              [(ngModel)]="numero"
+              class="form-control"
+              type="text"
+              id="addcontactemail-input"
+              placeholder="{{
+                'chat.tabs.contacts.modal.form.wp.placeholder' | translate
+              }}"
+            />
+          </div>
+          <div class="form-group mb-4">
+            <label for="addcontact-invitemessage-input">{{
+              "chat.tabs.contacts.modal.form.nome.label" | translate
+            }}</label>
+            <input
+              #teste2
+              [(ngModel)]="nome"
+              class="form-control"
+              type="text"
+              id="addcontact-invitemessage-input"
+              placeholder="{{
+                'chat.tabs.contacts.modal.form.nome.placeholder' | translate
+              }}"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-link"
+            (click)="modal.dismiss('Cross click')"
+          >
+            {{ "chat.tabs.contacts.modal.form.button.close" | translate }}
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            (click)="atualizarContato()"
+          >
+            {{ "chat.tabs.contacts.modal.form.button.contactEdit" | translate }}
+          </button>
+        </div>
+      </div>
+    </ng-template>
+    <!-- End Edit contact Modal -->
+
     <div class="search-box chat-search-box">
       <div class="input-group bg-light input-group-lg rounded-lg">
         <div class="input-group-prepend">
@@ -143,9 +213,13 @@
                   >{{ "chat.tabs.contacts.list.dropdown.item1" | translate }}
                   <i class="ri-mail-add-line float-right text-muted"></i
                 ></a>
-                <a class="dropdown-item" href="#"
+                <a
+                  (click)="editar(item)"
+                  (click)="openContactsModal(content2)"
+                  class="dropdown-item"
+                  href="#"
                   >{{ "chat.tabs.contacts.list.dropdown.item2" | translate }}
-                  <i class="ri-forbid-line float-right text-muted"></i
+                  <i class="ri-edit-line float-right text-muted"></i
                 ></a>
                 <a (click)="deleteContact(item)" class="dropdown-item" href="#"
                   >{{ "chat.tabs.contacts.list.dropdown.item3" | translate }}

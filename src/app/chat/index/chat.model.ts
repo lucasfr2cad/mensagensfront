@@ -28,4 +28,5 @@ export interface Message {
   ds_data?: string;
   // tslint:disable-next-line: variable-name
   ds_nome_do_arquivo?: string;
+  cd_codigo?: string;
 }

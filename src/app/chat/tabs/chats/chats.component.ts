@@ -10,6 +10,8 @@ import {EventEmitterService} from '../../../core/services/eventemitter.service';
 import { format } from 'date-fns';
 import { Subscription } from 'rxjs';
 import { AuthfakeauthenticationService } from 'src/app/core/services/authfake.service';
+import { Contato } from 'src/app/core/models/contato.models';
+import { UsuarioService } from 'src/app/core/services/usuarios.service';
 
 
 
@@ -25,11 +27,18 @@ import { AuthfakeauthenticationService } from 'src/app/core/services/authfake.se
 export class ChatsComponent implements OnInit {
   chat: Chats[];
   sub: Subscription;
+  sub2: Subscription;
+  items: any;
+  contato: any[];
+  contatos: Contato[];
+  text: string;
+  chatMenu: Chat;
+
 
 
   constructor(public translate: TranslateService, private chatsService: ChatsService,
               private chatativo: ChatativoService, private readonly signalRService: SignalRService,
-              private authfackservice: AuthfakeauthenticationService) { }
+              private authfackservice: AuthfakeauthenticationService, private usuarioService: UsuarioService) { }
 
   customOptions: OwlOptions = {
     loop: true,
@@ -38,14 +47,38 @@ export class ChatsComponent implements OnInit {
     margin: 16,
     navSpeed: 700,
     items: 4,
-    nav: false
+    nav: false,
   };
 
   ngOnInit(): void {
+    const currentUser = this.authfackservice.currentUserValue;
+    this.usuarioService.getContatosEmpresaID(currentUser.cd_empresa).subscribe(res => {
+      this.items = [{
+        text: 'Enviar conversa para',
+        items: []
+    }];
+      res.forEach(x => {
+        const teste = {text: x.ds_nome, cd_codigo: x.cd_codigo};
+        this.items[0].items.push(teste);
+      });
+    });
     this.LerChats();
     this.sub = EventEmitterService.get('NovaMensagem').subscribe(
       (res) => this.LerChats()
     );
+    this.sub2 = EventEmitterService.get('LerChat').subscribe((event) => {
+      this.LerChats();
+    });
+  }
+
+  itemClick(e): any {
+    this.chatsService.postAtribuiAtendente(this.chatMenu.cd_codigo, e.itemData.cd_codigo).subscribe(res => {
+      this.LerChats();
+    });
+  }
+
+  teste(e: any): any{
+    this.chatMenu = e;
   }
 
   LerChats = () => {

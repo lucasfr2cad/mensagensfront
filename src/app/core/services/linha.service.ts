@@ -20,4 +20,8 @@ export class LinhaService {
    getLinhaPeloDono(cd_codigo: any): Observable<Linha>{
     return this.http.get<Linha>(this.linhaUrl + 'CM_BuscarPeloDono/id?cd_codigo=' + cd_codigo);
   }
+
+  putLinha(linha: Linha): Observable<Linha>{
+    return this.http.put<Linha>(this.linhaUrl, linha);
+  }
 }

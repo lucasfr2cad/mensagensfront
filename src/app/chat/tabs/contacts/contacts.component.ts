@@ -12,6 +12,9 @@ import { Chat } from 'src/app/core/models/chat.models';
 import { Subscription } from 'rxjs';
 import {EventEmitterService} from '../../../core/services/eventemitter.service';
 import { ToastrService } from 'ngx-toastr';
+import { Contato } from 'src/app/core/models/contato.models';
+import { Linha } from 'src/app/core/models/linha.models';
+import { LinhaService } from 'src/app/core/services/linha.service';
 
 
 
@@ -31,11 +34,14 @@ export class ContactsComponent implements OnInit {
   chat: Chat;
   contactsList: any;
   NovoChat: any;
+  editarContato: Contato;
+  editarLinha: Linha;
 
   constructor(private modalService: NgbModal, public translate: TranslateService,
               private contatoServico: ContatoService, private authfackservice: AuthfakeauthenticationService,
               private chatUsuariosService: ChatUsuariosService, private chatsService: ChatsService,
-              private chatativo: ChatativoService, private toastr: ToastrService
+              private chatativo: ChatativoService, private toastr: ToastrService,
+              private linhaService: LinhaService
     ) { }
 
   ngOnInit(): void {
@@ -112,7 +118,29 @@ export class ContactsComponent implements OnInit {
     this.contatoServico.deleteContatoID(event.cd_codigo).subscribe(res => {
       this.lerContatos();
       this.toastr.success('Contato deletado com sucesso');
+      EventEmitterService.get('DesativaTela').emit(event);
     } );
+  }
+
+  editar(event): any {
+    this.editarContato = event;
+    this.linhaService.getLinhaPeloDono(event.cd_codigo).subscribe(res => {
+      this.editarLinha = res;
+      this.numero = this.editarLinha.ds_numero_wp;
+    });
+    this.nome = event.ds_nome;
+  }
+
+  atualizarContato(): any{
+    this.editarContato.ds_nome = this.nome;
+    this.editarLinha.ds_numero_wp = this.numero;
+    this.contatoServico.putContato(this.editarContato).subscribe(res => {
+      this.linhaService.putLinha(this.editarLinha).subscribe(res2 => {
+        this.modalService.dismissAll();
+        this.toastr.success('Contato salvo com sucesso');
+        this.lerContatos();
+      });
+    });
   }
 
   salvarContato(): any{

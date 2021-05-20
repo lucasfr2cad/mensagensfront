@@ -134,7 +134,16 @@
           *ngFor="let user of chat"
           [ngClass]="{ typing: user.isTyping, active: user.isActive }"
           (click)="showChat(user)"
+          id="chat"
         >
+          <dx-context-menu
+            [dataSource]="items"
+            [width]="200"
+            target="#chat"
+            (onItemClick)="itemClick($event)"
+            (onOptionChanged)="teste(user)"
+          >
+          </dx-context-menu>
           <a href="#">
             <div class="media">
               <div
@@ -152,7 +161,12 @@
                 />
                 <div class="avatar-xs" *ngIf="!user.profilePicture">
                   <span
-                    class="avatar-title rounded-circle bg-soft-primary text-primary"
+                    class="
+                      avatar-title
+                      rounded-circle
+                      bg-soft-primary
+                      text-primary
+                    "
                   >
                     {{ (user.name | translate).charAt(0) }}
                   </span>

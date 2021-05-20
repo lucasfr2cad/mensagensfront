@@ -18,5 +18,10 @@ export class UsuarioService {
     return this.http.get<Usuario>(this.usuarioUrl + `id?cd_codigo=` + cd_codigo);
   }
 
+  // tslint:disable-next-line: variable-name
+  getContatosEmpresaID(cd_codigo: any): Observable<Usuario[]>{
+    return this.http.get<Usuario[]>(this.usuarioUrl + 'BuscarUsuarioPorEmpresaid?cd_codigo=' + cd_codigo);
+  }
+
 
 }

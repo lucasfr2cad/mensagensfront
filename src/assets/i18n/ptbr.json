@@ -351,12 +351,13 @@
                   },
                   "dropdown": {
                       "item1": "Conversar",
-                      "item2": "Bloquear",
+                      "item2": "Editar",
                       "item3": "Remover"
                   }
               },
               "modal": {
-                  "title": "Adicoinar Contato",
+                  "title": "Adicionar Contato",
+                  "titleEdit": "Editar Contato",
                   "form": {
                       "email": {
                           "label": "Email",
@@ -376,7 +377,8 @@
                       },
                       "button": {
                           "close": "Fechar",
-                          "contact": "Adicionar Contato"
+                          "contact": "Adicionar Contato",
+                          "contactEdit": "Editar Contato"
                       }
                   }
               }

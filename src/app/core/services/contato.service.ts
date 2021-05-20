@@ -24,6 +24,11 @@ export class ContatoService {
   }
 
   // tslint:disable-next-line: variable-name
+  getContatosEmpresaID(cd_codigo: any): Observable<Contacts[]>{
+    return this.http.get<Contacts[]>(this.contatoUrl + 'BuscarPorEmpresaid?cd_codigo=' + cd_codigo);
+  }
+
+  // tslint:disable-next-line: variable-name
   deleteContatoID(cd_codigo: any): Observable<boolean>{
     return this.http.delete<boolean>(this.contatoUrl + 'cd_codigo?cd_codigo=' + cd_codigo);
   }
@@ -37,4 +42,9 @@ export class ContatoService {
     };
     return this.http.post<Contato>(this.contatoUrl, contato);
   }
+
+  putContato(contato: Contato): Observable<Contato>{
+    return this.http.put<Contato>(this.contatoUrl, contato);
+  }
+
 }

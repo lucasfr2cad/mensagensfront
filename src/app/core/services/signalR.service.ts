@@ -63,5 +63,8 @@ export class SignalRService {
         EventEmitterService.get('NovaMensagem').emit(mensagem);
       }
     });
+    this.hubConnection.on('AtualizarMensagem', (mensagem: Mensagem) => {
+      EventEmitterService.get('AtualizarMensagem').emit(mensagem);
+    });
   }
 }

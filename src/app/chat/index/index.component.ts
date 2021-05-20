@@ -19,6 +19,7 @@ import { MensagemParametroModelo } from '../../core/models/mensagemParametro.Mod
 import { ChatativoService } from 'src/app/core/services/chatativo.service';
 import { ContatoService } from 'src/app/core/services/contato.service';
 import {LinhaService} from 'src/app/core/services/linha.service';
+import { ChatsService } from 'src/app/core/services/chats.service';
 
 
 
@@ -42,6 +43,8 @@ export class IndexComponent implements OnInit {
   numeroEnviar: string;
   sub: Subscription;
   sub2: Subscription;
+  sub3: Subscription;
+  sub4: Subscription;
   popupVisible = false;
   binario: string;
   loadingVisible = false;
@@ -77,7 +80,7 @@ export class IndexComponent implements OnInit {
               private router: Router, public translate: TranslateService, private mensagensService: MensagensService,
               private sanitizer: DomSanitizer, private chatativoService: ChatativoService,
               private authfackservice: AuthfakeauthenticationService, private contatoService: ContatoService,
-              private linhaService: LinhaService) { }
+              private linhaService: LinhaService, private chatService: ChatsService) { }
 
   ngOnInit(): void {
     this.lang = this.translate.currentLang;
@@ -85,14 +88,30 @@ export class IndexComponent implements OnInit {
    ds_nome: 'Selecione um contato'
   };
     const currentUser = this.authfackservice.currentUserValue;
+    this.sub4 = EventEmitterService.get('AtualizarMensagem').subscribe((mensagem) => {
+      if (this.Messages.length > 0){
+        this.Messages.forEach(x => {
+          if (x.cd_codigo === mensagem.cd_codigo){
+            x.vl_status = mensagem.vl_status;
+          }
+        });
+      }
+    });
+    this.sub3 = EventEmitterService.get('DesativaTela').subscribe(() => {
+      this.chatativo = false;
+    });
     this.sub2 = EventEmitterService.get('LerChat').subscribe((event) => {
       this.vl_Numero_da_Pagina = 1;
       this.chatativo = true;
-      this.setarContato(event);
-      this.LerMensagensPorChat(event.cd_codigo);
-      setTimeout(() => {
+      if (event !== undefined){
+        this.setarContato(event);
+        this.LerMensagensPorChat(event.cd_codigo);
+        setTimeout(() => {
         this.componentRef.directiveRef.scrollToBottom();
-   }, 3000);
+      }, 3000);
+      }else{
+        this.chatativo = false;
+      }
     });
     this.sub = EventEmitterService.get('NovaMensagem').subscribe(
       (x) => {
@@ -177,10 +196,19 @@ export class IndexComponent implements OnInit {
   }
 
 
+  deleteChat(): any{
+    this.chatService.deleteChat(this.chatativoService.activeChatId).subscribe(res => {
+      this.chatativo = false;
+      EventEmitterService.get('LerChat').emit();
+    });
+  }
+
+
   /**
    * Show user profile
    */
-  showUserProfile(): any {
+  showUserProfile(contato): any {
+    EventEmitterService.get('AbreContato').emit(contato);
     document.getElementById('profile-detail').style.display = 'block';
   }
 
