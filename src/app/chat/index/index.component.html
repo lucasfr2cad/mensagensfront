@@ -121,11 +121,11 @@
             aria-expanded="false"
             ngbDropdownToggle
           >
-            <img
+            <!-- <img
               src="assets/images/users/avatar-1.jpg"
               alt=""
               class="profile-user rounded-circle"
-            />
+            /> -->
           </a>
           <div class="dropdown-menu" ngbDropdownMenu>
             <a class="dropdown-item" href="#"
@@ -682,6 +682,15 @@
                             </ul>
                           </div>
                         </div>
+                      </div>
+
+                      <div class="card p-2 mb-2" *ngIf="data.isAudio">
+                        <audio
+                          [src]="data.audio"
+                          id="audio"
+                          controls
+                          #audioTag
+                        ></audio>
                       </div>
 
                       <p class="chat-time mb-0" *ngIf="!data.istyping">

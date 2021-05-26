@@ -53,7 +53,21 @@ export class MensagensService {
           if (x.ds_mimetype.startsWith('image')){
           x.isimage = true;
           x. imageContent = this.sanitizer.bypassSecurityTrustResourceUrl(`data:${x.ds_mimetype};base64, ${x.ds_data}`);
-        }
+          }
+          else if (x.ds_mimetype.startsWith('audio')){
+              const byteCharacters = atob(x.ds_data);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                  byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              const blob = new Blob([byteArray], {type: x.ds_mimetype});
+              const blobUrl = URL.createObjectURL(blob);
+              const santizado = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
+              x.isAudio = true;
+              x.audio = santizado;
+          }
+
           else{
             x.isfile = true;
             x.fileContent = 'arquivo';
