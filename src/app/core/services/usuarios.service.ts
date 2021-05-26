@@ -23,5 +23,18 @@ export class UsuarioService {
     return this.http.get<Usuario[]>(this.usuarioUrl + 'BuscarUsuarioPorEmpresaid?cd_codigo=' + cd_codigo);
   }
 
+  postUsuario(usuario: Usuario): Observable<Usuario>{
+    return this.http.post<Usuario>(this.usuarioUrl, usuario);
+  }
+
+  putUsuario(usuario: Usuario): Observable<Usuario>{
+    return this.http.put<Usuario>(this.usuarioUrl, usuario);
+  }
+
+  // tslint:disable-next-line: variable-name
+  deleteUsuario(cd_codigo: any): Observable<boolean>{
+    return this.http.delete<boolean>(this.usuarioUrl + 'cd_codigo?cd_codigo=' + cd_codigo);
+  }
+
 
 }

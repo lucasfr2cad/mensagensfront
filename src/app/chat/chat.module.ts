@@ -13,7 +13,7 @@ import { ChatRoutingModule } from './chat-routing.module';
 import { IndexComponent } from './index/index.component';
 import { ProfileDetailComponent } from './profile-detail/profile-detail.component';
 import { TranslateModule } from '@ngx-translate/core';
-import {DevExtremeModule} from 'devextreme-angular';
+import {DevExtremeModule, DxDropDownButtonModule} from 'devextreme-angular';
 import {DxPopupModule,
         DxLoadPanelModule
 } from 'devextreme-angular';
@@ -36,6 +36,7 @@ import {  NgxEmojiPickerModule  } from 'ngx-emoji-picker';
     DxPopupModule,
     DxLoadPanelModule,
     NgxEmojiPickerModule,
+    DxDropDownButtonModule
   ],
   exports: [ProfileDetailComponent]
 })

@@ -11,6 +11,7 @@ import {ChatativoService} from '../../core/services/chatativo.service';
 import {EventEmitterService} from '../../core/services/eventemitter.service';
 import {Mensagem} from '../../core/models/mensagem.models';
 import { AuthfakeauthenticationService } from './authfake.service';
+import { Chat } from '../models/chat.models';
 
 
 
@@ -65,6 +66,9 @@ export class SignalRService {
     });
     this.hubConnection.on('AtualizarMensagem', (mensagem: Mensagem) => {
       EventEmitterService.get('AtualizarMensagem').emit(mensagem);
+    });
+    this.hubConnection.on('ChatAtualizado', (chat: Chat) => {
+      EventEmitterService.get('ChatAtualizado').emit(chat);
     });
   }
 }

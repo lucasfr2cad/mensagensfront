@@ -20,6 +20,7 @@ import { ChatativoService } from 'src/app/core/services/chatativo.service';
 import { ContatoService } from 'src/app/core/services/contato.service';
 import {LinhaService} from 'src/app/core/services/linha.service';
 import { ChatsService } from 'src/app/core/services/chats.service';
+import { Usuario } from 'src/app/core/models/usuario.models';
 
 
 
@@ -57,6 +58,8 @@ export class IndexComponent implements OnInit {
   mensagemParametroModelo: MensagemParametroModelo;
   primeiraVezCarregando = true;
   linhaContato: Linha;
+  adm = false;
+  usuario: Usuario;
 
 
   listLang = [
@@ -88,6 +91,8 @@ export class IndexComponent implements OnInit {
    ds_nome: 'Selecione um contato'
   };
     const currentUser = this.authfackservice.currentUserValue;
+    this.usuario = this.authfackservice.currentUserValue;
+    this.adm = currentUser.ds_perfil_acesso === 'atendente' ? false : true;
     this.sub4 = EventEmitterService.get('AtualizarMensagem').subscribe((mensagem) => {
       if (this.Messages.length > 0){
         this.Messages.forEach(x => {
@@ -107,7 +112,9 @@ export class IndexComponent implements OnInit {
         this.setarContato(event);
         this.LerMensagensPorChat(event.cd_codigo);
         setTimeout(() => {
-        this.componentRef.directiveRef.scrollToBottom();
+          if (this.componentRef !== undefined){
+              this.componentRef.directiveRef.scrollToBottom();
+          }
       }, 3000);
       }else{
         this.chatativo = false;
@@ -264,18 +271,19 @@ export class IndexComponent implements OnInit {
       };
       // tslint:disable-next-line: deprecation
       this.mensagensService.postMensagem(mensagem).subscribe((Res: Mensagem) => {
-        this.MensagemRecebida = {
-          align : 'right',
-          time : format(new Date(), 'HH:mm'),
-          isimage: mensagem.ds_mimetype.startsWith('image') ? true : false,
-          isfile: mensagem.ds_mimetype.startsWith('image') ? false : true,
-          imageContent : mensagem.ds_mimetype.startsWith('image') ? this.sanitizer.bypassSecurityTrustResourceUrl(`data:${mensagem.ds_mimetype};base64, ${mensagem.ds_data}`) : null,
-          fileContent : mensagem.ds_mimetype.startsWith('image') ? null : 'arquivo',
-          ds_data: mensagem.ds_data,
-          ds_mimetype: mensagem.ds_mimetype,
-          st_midia: true
-        };
-        this.Messages.push(this.MensagemRecebida);
+        // this.MensagemRecebida = {
+        //   align : 'right',
+        //   time : format(new Date(), 'HH:mm'),
+        //   isimage: mensagem.ds_mimetype.startsWith('image') ? true : false,
+        //   isfile: mensagem.ds_mimetype.startsWith('image') ? false : true,
+        // tslint:disable-next-line: max-line-length
+        //   imageContent : mensagem.ds_mimetype.startsWith('image') ? this.sanitizer.bypassSecurityTrustResourceUrl(`data:${mensagem.ds_mimetype};base64, ${mensagem.ds_data}`) : null,
+        //   fileContent : mensagem.ds_mimetype.startsWith('image') ? null : 'arquivo',
+        //   ds_data: mensagem.ds_data,
+        //   ds_mimetype: mensagem.ds_mimetype,
+        //   st_midia: true
+        // };
+        // this.Messages.push(this.MensagemRecebida);
         this.textoatual = null;
         setTimeout(() => {
           this.hideInfo();

@@ -28,6 +28,7 @@ export class ChatsComponent implements OnInit {
   chat: Chats[];
   sub: Subscription;
   sub2: Subscription;
+  sub3: Subscription;
   items: any;
   contato: any[];
   contatos: Contato[];
@@ -69,10 +70,14 @@ export class ChatsComponent implements OnInit {
     this.sub2 = EventEmitterService.get('LerChat').subscribe((event) => {
       this.LerChats();
     });
+    this.sub3 = EventEmitterService.get('ChatAtualizado').subscribe(
+      (res) => this.LerChats()
+    );
   }
 
   itemClick(e): any {
     this.chatsService.postAtribuiAtendente(this.chatMenu.cd_codigo, e.itemData.cd_codigo).subscribe(res => {
+      EventEmitterService.get('DesativaTela').emit(e);
       this.LerChats();
     });
   }

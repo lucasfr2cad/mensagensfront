@@ -159,7 +159,7 @@
           "chats": {
               "title": "Chats",
               "search": {
-                  "placeholder": "Pesquisar mensagens de contatoss"
+                  "placeholder": "Pesquisar mensagens de contatos"
               },
               "users": {
                   "1": "Patrick",
@@ -251,9 +251,9 @@
               }
           },
           "groups": {
-              "title": "Groups",
+              "title": "Usuários",
               "search": {
-                  "placeholder": "Search groups..."
+                  "placeholder": "Procurar usuários..."
               },
               "list": {
                   "general": "General",
@@ -264,7 +264,7 @@
                   "snacks": "Snacks"
               },
               "modal": {
-                  "title": "Create New Group",
+                  "title": "Adicionar novo usuário",
                   "form": {
                       "name": {
                           "label": "Group Name",
@@ -284,8 +284,8 @@
                           "placeholder": "Enter description"
                       },
                       "button": {
-                          "close": "Close",
-                          "create": "Create Groups"
+                          "close": "Fechar",
+                          "create": "Adicionar usuários"
                       }
                   }
               }

@@ -68,7 +68,7 @@
             <i class="ri-message-3-line"></i>
           </a>
         </li>
-        <!-- <li class="nav-item" ngbTooltip="Grupos">
+        <li *ngIf="adm" class="nav-item" ngbTooltip="Usuários">
           <a
             class="nav-link"
             id="pills-groups-tab"
@@ -78,7 +78,7 @@
           >
             <i class="ri-group-line"></i>
           </a>
-        </li> -->
+        </li>
         <li class="nav-item" ngbTooltip="Contatos" placement="top">
           <a
             class="nav-link"
@@ -212,11 +212,17 @@
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <img
+            <!-- <img
               src="assets/images/users/avatar-4.jpg"
               alt=""
               class="profile-user rounded-circle"
-            />
+            /> -->
+
+            <div *ngIf="!usuario.ds_foto">
+              <span class="">
+                {{ (usuario.ds_usuario | translate).charAt(0) }}
+              </span>
+            </div>
           </a>
           <div class="dropdown-menu" ngbDropdownMenu>
             <a class="dropdown-item" href="#"

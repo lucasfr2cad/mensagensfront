@@ -14,7 +14,7 @@ import { GroupsComponent } from './groups/groups.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DxContextMenuModule } from 'devextreme-angular';
+import { DxContextMenuModule, DxDropDownButtonModule } from 'devextreme-angular';
 
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -35,7 +35,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    DxContextMenuModule
+    DxContextMenuModule,
+    DxDropDownButtonModule
   ],
   exports: [ProfileComponent, ChatsComponent, ContactsComponent, GroupsComponent, SettingsComponent],
   providers: [

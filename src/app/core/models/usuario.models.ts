@@ -23,4 +23,5 @@ export class Usuario {
   ds_perfil_acesso?: string;
    // tslint:disable-next-line: variable-name
   cd_empresa?: string;
+  name?: string;
 }
