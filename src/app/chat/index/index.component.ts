@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Message } from './chat.model';
@@ -13,7 +13,7 @@ import { Contato } from 'src/app/core/models/contato.models';
 import { Linha } from 'src/app/core/models/linha.models';
 import {Mensagem} from '../../core/models/mensagem.models';
 import { Chat } from 'src/app/core/models/chat.models';
-import { Subscription } from 'rxjs';
+import { fromEvent, Observable, Subscription } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MensagemParametroModelo } from '../../core/models/mensagemParametro.Models';
 import { ChatativoService } from 'src/app/core/services/chatativo.service';
@@ -21,7 +21,17 @@ import { ContatoService } from 'src/app/core/services/contato.service';
 import {LinhaService} from 'src/app/core/services/linha.service';
 import { ChatsService } from 'src/app/core/services/chats.service';
 import { Usuario } from 'src/app/core/models/usuario.models';
+const MicRecorder = require('mic-recorder-to-mp3');
 
+
+
+declare var MediaRecorder: any;
+
+export enum RecordingState {
+  STOPPED = 'stopped',
+  RECORDING = 'recording',
+  FORBIDDEN = 'forbidden',
+}
 
 
 @Component({
@@ -60,6 +70,14 @@ export class IndexComponent implements OnInit {
   linhaContato: Linha;
   adm = false;
   usuario: Usuario;
+  seconds: number;
+  state: RecordingState = RecordingState.STOPPED;
+  audioURLs = [];
+  private mediaRecorder;
+  private recordings$: Observable<any>;
+  private recorder = new MicRecorder({
+    bitRate: 128
+  });
 
 
   listLang = [
@@ -83,9 +101,19 @@ export class IndexComponent implements OnInit {
               private router: Router, public translate: TranslateService, private mensagensService: MensagensService,
               private sanitizer: DomSanitizer, private chatativoService: ChatativoService,
               private authfackservice: AuthfakeauthenticationService, private contatoService: ContatoService,
-              private linhaService: LinhaService, private chatService: ChatsService) { }
+              private linhaService: LinhaService, private chatService: ChatsService,
+              private changeDetector: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      this.mediaRecorder = new MediaRecorder(stream);
+      this.recordings$ = fromEvent(this.mediaRecorder, 'dataavailable');
+    })
+    .catch(error => {
+      console.log('CANNOT RECORD: ', error);
+      this.state = RecordingState.FORBIDDEN;
+    });
     this.lang = this.translate.currentLang;
     this.contato = {
    ds_nome: 'Selecione um contato'
@@ -252,6 +280,8 @@ export class IndexComponent implements OnInit {
     this.sub.unsubscribe();
 }
 
+// download and upload start
+
   handleUpload(event: any): any {
   const file = event.target.files[0];
   const reader = new FileReader();
@@ -271,19 +301,6 @@ export class IndexComponent implements OnInit {
       };
       // tslint:disable-next-line: deprecation
       this.mensagensService.postMensagem(mensagem).subscribe((Res: Mensagem) => {
-        // this.MensagemRecebida = {
-        //   align : 'right',
-        //   time : format(new Date(), 'HH:mm'),
-        //   isimage: mensagem.ds_mimetype.startsWith('image') ? true : false,
-        //   isfile: mensagem.ds_mimetype.startsWith('image') ? false : true,
-        // tslint:disable-next-line: max-line-length
-        //   imageContent : mensagem.ds_mimetype.startsWith('image') ? this.sanitizer.bypassSecurityTrustResourceUrl(`data:${mensagem.ds_mimetype};base64, ${mensagem.ds_data}`) : null,
-        //   fileContent : mensagem.ds_mimetype.startsWith('image') ? null : 'arquivo',
-        //   ds_data: mensagem.ds_data,
-        //   ds_mimetype: mensagem.ds_mimetype,
-        //   st_midia: true
-        // };
-        // this.Messages.push(this.MensagemRecebida);
         this.textoatual = null;
         setTimeout(() => {
           this.hideInfo();
@@ -299,6 +316,21 @@ export class IndexComponent implements OnInit {
   };
 }
 
+downloadFile(event: any): any{
+  const FileSaver = require('file-saver');
+  const byteCharacters = atob(event.ds_data);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], {type: event.ds_mimetype});
+  FileSaver.saveAs(blob, 'arquivo');
+}
+
+// download and upload start end
+
+// popup start
 showInfo(): any {
   this.popupVisible = true;
 }
@@ -313,23 +345,79 @@ showLoadPanel(): any {
 hideLoadPanel(): any {
   this.loadingVisible = false;
 }
+// popup end
 
 handleSelection(event: any): any {
   this.textoatual = this.textoatual == null ? event.char : this.textoatual + event.char;
 }
 
-downloadFile(event: any): any{
-  const FileSaver = require('file-saver');
-  const byteCharacters = atob(event.ds_data);
-  const byteNumbers = new Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-  const byteArray = new Uint8Array(byteNumbers);
-  const blob = new Blob([byteArray], {type: event.ds_mimetype});
-  FileSaver.saveAs(blob, 'arquivo');
+
+
+// audio record start
+onHold(time): any {
+  this.state = RecordingState.RECORDING;
+  this.seconds = Math.round(time / 1000);
 }
 
+startRecording2(): any {
+  // Start recording. Browser will request permission to use your microphone.
+this.recorder.start().then(() => {
+  // something else
+}).catch((e) => {
+  console.error(e);
+});
+}
+
+stopRecording2(): any {
+  this.state = RecordingState.STOPPED;
+  this.recorder
+.stop()
+.getMp3().then(([buffer, blob]) => {
+  // do what ever you want with buffer and blob
+  // Example: Create a mp3 file and play
+  const file = new File(buffer, 'me-at-thevoice.mp3', {
+    type: blob.type,
+    lastModified: Date.now()
+  });
+
+  console.log(file);
+
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => {
+      this.showLoadPanel();
+      let arquivoBi: any;
+      arquivoBi = reader.result;
+      this.binario = arquivoBi;
+      let numeroFinal = this.linhaContato.ds_numero_wp;
+      numeroFinal = numeroFinal.replace('@c.us', '');
+      const mensagem = {
+        ds_data : this.binario.substr(this.binario.indexOf(',') + 1),
+        ds_destinatario : numeroFinal,
+        ds_mimetype : this.binario.match(/[^:\s*]\w+\/[\w-+\d.]+(?=[;| ])/)[0],
+        st_midia : true
+      };
+      // tslint:disable-next-line: deprecation
+      this.mensagensService.postMensagem(mensagem).subscribe((Res: Mensagem) => {
+        this.textoatual = null;
+        setTimeout(() => {
+          this.hideInfo();
+          this.componentRef.directiveRef.scrollToBottom();
+          this.hideLoadPanel();
+     }, 500);
+        this.componentRef.directiveRef.scrollToBottom();
+      }, error => {
+        this.hideInfo();
+        this.hideLoadPanel();
+        console.log(error);
+      });
+  };
+
+}).catch((e) => {
+  alert('We could not retrieve your message');
+  console.log(e);
+});
+}
 
 }
 

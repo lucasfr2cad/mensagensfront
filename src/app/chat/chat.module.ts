@@ -18,10 +18,12 @@ import {DxPopupModule,
         DxLoadPanelModule
 } from 'devextreme-angular';
 import {  NgxEmojiPickerModule  } from 'ngx-emoji-picker';
+import { HoldableDirective } from './index/holdable.directive';
+
 
 
 @NgModule({
-  declarations: [IndexComponent, ProfileDetailComponent],
+  declarations: [IndexComponent, ProfileDetailComponent, HoldableDirective],
   imports: [
     FormsModule,
     PerfectScrollbarModule,
@@ -36,8 +38,8 @@ import {  NgxEmojiPickerModule  } from 'ngx-emoji-picker';
     DxPopupModule,
     DxLoadPanelModule,
     NgxEmojiPickerModule,
-    DxDropDownButtonModule
+    DxDropDownButtonModule,
   ],
-  exports: [ProfileDetailComponent]
+  exports: [ProfileDetailComponent, HoldableDirective],
 })
 export class ChatModule { }

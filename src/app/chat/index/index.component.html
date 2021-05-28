@@ -684,7 +684,7 @@
                         </div>
                       </div>
 
-                      <div class="card p-2 mb-2" *ngIf="data.isAudio">
+                      <div *ngIf="data.isAudio">
                         <audio
                           [src]="data.audio"
                           id="audio"
@@ -825,14 +825,36 @@
                 <ul class="list-inline mb-0">
                   <li class="list-inline-item">
                     <!-- <button
+                      holdable
+                      *ngIf="!audioURL"
+                      (holdTime)="onHold($event)"
+                      (start)="startRecording2()"
+                      (stop)="stopRecording2()"
+                    >
+                      {{ state === "recording" ? seconds : "REC" }}
+                    </button> -->
+                    <button
+                      holdable
                       type="button"
-                      class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect"
+                      class="
+                        btn btn-link
+                        text-decoration-none
+                        font-size-16
+                        btn-lg
+                        waves-effect
+                      "
                       data-toggle="tooltip"
                       data-placement="top"
-                      ngbTooltip="Emoji"
+                      ngbTooltip="Audio"
+                      *ngIf="!audioURL"
+                      (holdTime)="onHold($event)"
+                      (start)="startRecording2()"
+                      (stop)="stopRecording2()"
                     >
-                      <i class="ri-emotion-happy-line"></i>
-                    </button> -->
+                      {{ state === "recording" ? seconds : "" }}
+                      <i class="ri-mic-line"></i>
+                    </button>
+
                     <i
                       class="
                         ri-emotion-happy-line
