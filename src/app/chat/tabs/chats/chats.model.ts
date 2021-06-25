@@ -19,4 +19,8 @@ export interface Chats {
     cd_atendente?: string;
     ds_nome_atendente?: string;
     cd_codigo_chat?: string;
+    st_interno?: boolean;
+    st_grupo?: boolean;
+    cd_ultimo_id: string;
+    vl_nao_lida?: number;
 }

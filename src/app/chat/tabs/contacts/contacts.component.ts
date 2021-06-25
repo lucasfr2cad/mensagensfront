@@ -27,6 +27,7 @@ import { LinhaService } from 'src/app/core/services/linha.service';
  * Tab-contacts component
  */
 export class ContactsComponent implements OnInit {
+  busca = '';
   numero = '';
   nome = '';
   sub: Subscription;
@@ -135,21 +136,39 @@ export class ContactsComponent implements OnInit {
     this.editarContato.ds_nome = this.nome;
     this.editarLinha.ds_numero_wp = this.numero;
     this.contatoServico.putContato(this.editarContato).subscribe(res => {
-      this.linhaService.putLinha(this.editarLinha).subscribe(res2 => {
+      this.contatoServico.postValidaNWP(this.numero).subscribe(res1 => {
+        if (res1.resposta){
+        this.editarLinha.ds_numero_wp = res1.ds_numero_wp;
+        this.linhaService.putLinha(this.editarLinha).subscribe(res2 => {
         this.modalService.dismissAll();
         this.toastr.success('Contato salvo com sucesso');
         this.lerContatos();
+      });
+        }else{
+        window.alert('Esse número não existe no WhatsApp');
+        }
       });
     });
   }
 
   salvarContato(): any{
     const currentUser = this.authfackservice.currentUserValue;
-    this.contatoServico.postContato(currentUser.cd_empresa, this.nome, this.numero).subscribe(res => {
-      this.modalService.dismissAll();
-      this.toastr.success('Contato salvo com sucesso');
-      this.lerContatos();
+    this.contatoServico.postValidaNWP(this.numero).subscribe(res1 => {
+      if (res1.resposta){
+        this.numero = res1.ds_numero_wp;
+        this.contatoServico.postContato(currentUser.cd_empresa, this.nome, this.numero).subscribe(res => {
+        this.modalService.dismissAll();
+        this.toastr.success('Contato salvo com sucesso');
+        this.lerContatos();
     });
+      }else{
+        window.alert('Esse Número não existe no whatsapp');
+      }
+    });
+  }
+
+  stop(event): any{
+    event.stopPropagation();
   }
 
 }

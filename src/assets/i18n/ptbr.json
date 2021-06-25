@@ -159,7 +159,7 @@
           "chats": {
               "title": "Chats",
               "search": {
-                  "placeholder": "Pesquisar mensagens de contatos"
+                  "placeholder": "Pesquisar chats"
               },
               "users": {
                   "1": "Patrick",
@@ -527,7 +527,7 @@
           "dropdown": {
               "copy": "Copiar",
               "save": "Salvar",
-              "forward": "Avançar",
+              "forward": "Encaminhar",
               "delete": "Deletar"
           },
           "filedropdown": {

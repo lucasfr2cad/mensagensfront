@@ -6,6 +6,8 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { CarouselModule } from 'ngx-owl-carousel-o';
+import { OrderByPipe } from '../tabs/chats/order-by.pipe';
+
 
 import { ProfileComponent } from './profile/profile.component';
 import { ChatsComponent } from './chats/chats.component';
@@ -14,7 +16,12 @@ import { GroupsComponent } from './groups/groups.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DxContextMenuModule, DxDropDownButtonModule } from 'devextreme-angular';
+import { DxContextMenuModule, DxDropDownButtonModule, DxLoadPanelModule, DxMenuModule } from 'devextreme-angular';
+import { PushNotificationsModule } from 'ng-push-ivy';
+import { AngularPageVisibilityModule } from 'angular-page-visibility';
+import {NgPipesModule} from 'ngx-pipes';
+
+
 
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -22,7 +29,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 @NgModule({
-  declarations: [ProfileComponent, ChatsComponent, ContactsComponent, GroupsComponent, SettingsComponent],
+  declarations: [ProfileComponent, ChatsComponent, ContactsComponent, GroupsComponent, SettingsComponent, OrderByPipe],
   imports: [
     CarouselModule,
     CommonModule,
@@ -36,7 +43,12 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FormsModule,
     ReactiveFormsModule,
     DxContextMenuModule,
-    DxDropDownButtonModule
+    DxDropDownButtonModule,
+    DxMenuModule,
+    DxLoadPanelModule,
+    PushNotificationsModule,
+    AngularPageVisibilityModule,
+    NgPipesModule
   ],
   exports: [ProfileComponent, ChatsComponent, ContactsComponent, GroupsComponent, SettingsComponent],
   providers: [

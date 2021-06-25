@@ -29,4 +29,7 @@ export interface Message {
   // tslint:disable-next-line: variable-name
   ds_nome_do_arquivo?: string;
   cd_codigo?: string;
+  st_citacao?: boolean;
+  ds_id_mensagem_whatsapp_serializado?: string;
+  ds_corpo_citado?: string;
 }

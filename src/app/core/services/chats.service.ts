@@ -35,6 +35,15 @@ export class ChatsService {
   }
 
   // tslint:disable-next-line: variable-name
+  CM_CriaNovoChatComChatsUsuariosParaUsuarios(cd_destinatario: string, cd_remetente: string): Observable<Chats[]>{
+    const chat = {
+      cd_destinatario,
+      cd_remetente
+    };
+    return this.http.post<Chats[]>(this.chatUrl + `CM_CriaNovoChatComChatsUsuariosParaUsuarios`, chat);
+  }
+
+  // tslint:disable-next-line: variable-name
   getAllChatPorUsuario(cd_codigo: string): Observable<Chat[]>{
     return this.http.get<Chat[]>(this.chatUrl + `BuscaChatid?cd_codigo=` + cd_codigo);
   }
@@ -45,8 +54,12 @@ export class ChatsService {
   }
 
   // tslint:disable-next-line: variable-name
-  getChatsPorEmpresa(cd_codigo: string): Observable<Chats[]>{
-    return this.http.get<Chats[]>(this.chatUrl + `BuscaChatPorEmpresa/id?cd_codigo=` + cd_codigo);
+  getChatsPorEmpresa(cd_empresa: string, cd_usuario: string): Observable<Chats[]>{
+    return this.http.get<Chats[]>(this.chatUrl + `BuscaChatPorEmpresa?cd_empresa=` + cd_empresa + '&cd_usuario=' + cd_usuario);
+  }
+  // tslint:disable-next-line: variable-name
+  CM_BuscarChatInterno(cd_empresa: string, cd_usuario: string): Observable<Chats[]>{
+    return this.http.get<Chats[]>(this.chatUrl + `CM_BuscarChatInterno?cd_empresa=` + cd_empresa + '&cd_usuario=' + cd_usuario);
   }
 
     // tslint:disable-next-line: variable-name

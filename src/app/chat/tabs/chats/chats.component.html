@@ -1,3 +1,14 @@
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  message="Carregando, aguarde..."
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  [closeOnOutsideClick]="false"
+>
+</dx-load-panel>
 <!-- Start chats content -->
 <div>
   <div class="px-4 pt-4">
@@ -13,6 +24,7 @@
           </button>
         </div>
         <input
+          [(ngModel)]="busca"
           type="text"
           class="form-control bg-light"
           placeholder="{{ 'chat.tabs.chats.search.placeholder' | translate }}"
@@ -131,21 +143,23 @@
     <perfect-scrollbar class="chat-message-list">
       <ul class="list-unstyled chat-list chat-user-list">
         <li
-          *ngFor="let user of chat"
-          [ngClass]="{ typing: user.isTyping, active: user.isActive }"
           (click)="showChat(user)"
+          *ngFor="
+            let user of chat
+              | orderBy: '-dt_atualizacao'
+              | filterBy: ['ds_nome']:busca
+          "
+          [ngClass]="{
+            typing: user.isTyping,
+            active: user.cd_codigo == idChat
+          }"
           id="chat"
         >
-          <dx-context-menu
-            [dataSource]="items"
-            [width]="200"
-            target="#chat"
-            (onItemClick)="itemClick($event)"
-            (onOptionChanged)="teste(user)"
-          >
-          </dx-context-menu>
-          <a href="#">
+          <a href="#" [ngClass]="user.st_interno === true ? 'int' : 'gru'">
             <div class="media">
+              <span *ngIf="user.vl_nao_lida > 0" class="badge badge-secondary">
+                {{ user.vl_nao_lida }}
+              </span>
               <div
                 class="chat-user-img align-self-center mr-3"
                 [ngClass]="{
@@ -192,8 +206,25 @@
                   {{ user.lastMessage | translate }}
                 </p>
               </div>
-              <div class="font-size-11">{{ user.time | translate }}</div>
-              <div class="unread-message">
+              <div class="font-size-11">
+                {{ user.time | translate }}
+              </div>
+
+              <div>
+                <dx-menu
+                  #menu
+                  [dataSource]="items"
+                  displayExpr="name"
+                  [showFirstSubmenuMode]="showFirstSubmenuModes"
+                  orientation="horizontal"
+                  submenuDirection="auto"
+                  [hideSubmenuOnMouseLeave]="false"
+                  [disabled]="user.st_interno || user.st_grupo"
+                  (onItemClick)="itemClick($event, user.cd_codigo)"
+                >
+                </dx-menu>
+              </div>
+              <div *ngIf="!user.st_grupo" class="unread-message">
                 <span class="badge badge-soft-danger badge-pill">{{
                   user.unRead
                 }}</span>

@@ -49,6 +49,7 @@
               placeholder="{{
                 'chat.tabs.contacts.modal.form.wp.placeholder' | translate
               }}"
+              required
             />
           </div>
           <div class="form-group mb-4">
@@ -64,6 +65,7 @@
               placeholder="{{
                 'chat.tabs.contacts.modal.form.nome.placeholder' | translate
               }}"
+              required
             />
           </div>
         </div>
@@ -170,6 +172,7 @@
         <input
           type="text"
           class="form-control bg-light"
+          [(ngModel)]="busca"
           placeholder="{{
             'chat.tabs.contacts.search.placeholder' | translate
           }}"
@@ -191,13 +194,13 @@
       </div>
 
       <ul class="list-unstyled contact-list">
-        <li *ngFor="let item of item.contacts">
-          <div class="media align-items-center">
+        <li *ngFor="let item of item.contacts | filterBy: ['ds_nome']:busca">
+          <div (click)="showChat(item)" class="media align-items-center">
             <div class="media-body">
               <h5 class="font-size-14 m-0">{{ item.name | translate }}</h5>
             </div>
 
-            <div class="dropdown" ngbDropdown>
+            <div (click)="stop($event)" class="dropdown" ngbDropdown>
               <a
                 href="javascript: void(0);"
                 class="text-muted dropdown-toggle"

@@ -47,4 +47,12 @@ export class ContatoService {
     return this.http.put<Contato>(this.contatoUrl, contato);
   }
 
+  // tslint:disable-next-line: variable-name
+  postValidaNWP(ds_numero_wp: string): Observable<any>{
+    const contato = {
+      ds_numero_wp
+    };
+    return this.http.post<any>(this.contatoUrl + 'ValidaNumeroWP', contato);
+  }
+
 }

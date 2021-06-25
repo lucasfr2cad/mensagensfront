@@ -69,6 +69,7 @@ export class SignalRService {
     });
     this.hubConnection.on('ChatAtualizado', (chat: Chat) => {
       EventEmitterService.get('ChatAtualizado').emit(chat);
+      console.log('Chat Atualizado');
     });
   }
 }

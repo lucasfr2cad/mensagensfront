@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'chatvia'`, () => {
+  it(`should have as title 'reichat'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('chatvia');
+    expect(app.title).toEqual('reichat');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('chatvia app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('reichat app is running!');
   });
 });

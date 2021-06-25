@@ -15,6 +15,7 @@ export class LoaderInterceptorService implements HttpInterceptor {
   private requests: HttpRequest<any>[] = [];
   constructor(private loaderService: LoaderService) { }
 
+  // tslint:disable-next-line: typedef
   removeRequest(req: HttpRequest<any>) {
     const i = this.requests.indexOf(req);
     if (i >= 0) {

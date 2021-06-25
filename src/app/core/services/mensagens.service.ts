@@ -9,6 +9,7 @@ import {MensagemParametroModelo} from '../models/mensagemParametro.Models';
 import { DomSanitizer } from '@angular/platform-browser';
 import { format } from 'date-fns';
 import { AuthfakeauthenticationService } from './authfake.service';
+import {MensagemInterna} from '../models/mensagemInterna.Models';
 
 @Injectable({ providedIn: 'root' })
 export class MensagensService {
@@ -42,12 +43,25 @@ export class MensagensService {
     bindarMensagens = (res: any): Promise<[]> => {
       const currentUser = this.authfackservice.currentUserValue;
       res.forEach(x => {
-        x.message = x.ds_corpo;
-        x.align = x.st_de_mim ? 'right' : 'left';
+        if (x.ds_corpo !== null){
+          x.message = x.ds_corpo.replace(/\*/g, '');
+        }else{
+          x.message = x.ds_corpo;
+        }
+        if (x.ds_tipo === 'interno'){
+          if (currentUser.cd_codigo === x.ds_remetente){
+            x.align = 'right';
+          }else{
+            x.align = 'left';
+          }
+        }else{
+          x.align = x.st_de_mim ? 'right' : 'left';
+        }
         x.time = format(new Date(x.dt_criacao), 'dd/MM HH:mm');
         // x.profile = 'assets/images/users/avatar-4.jpg';
         x.vl_status = x.vl_status;
-       // x.name = x.ds_nome_contato_curto;
+        x.name = x.ds_nome_contato_curto;
+        x.st_grupo = x.st_grupo;
         if (x.ds_mimetype !== null)
         {
           if (x.ds_mimetype.startsWith('image')){
@@ -103,6 +117,20 @@ export class MensagensService {
     teste =  await this.postMensagemPorIdOrdenada(chatId, mensagemParametroModelo).toPromise();
     return this.bindarMensagens(teste);
   }
+
+  postMensagemInterna(mensagem: MensagemInterna): Observable<Message[]> {
+    return this.http.post<Message[]>(this.mensagensUrl + `enviarmensageminterna`, mensagem);
+}
+
+// tslint:disable-next-line: variable-name
+deleteMessage(cd_codigo: string): Observable<boolean>{
+  return this.http.delete<boolean>(this.mensagensUrl + 'cd_codigo?cd_codigo=' + cd_codigo);
+}
+
+// tslint:disable-next-line: variable-name
+getMessage(cd_codigo: string): Observable<Message>{
+  return this.http.get<Message>(this.mensagensUrl + 'cd_codigo?cd_codigo=' + cd_codigo);
+}
 
 
 }

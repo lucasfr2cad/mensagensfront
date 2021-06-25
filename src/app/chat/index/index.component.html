@@ -1,6 +1,13 @@
+<!-- Start Add contact Modal -->
+<ng-template #content let-modal>
+  <div class="modal-content">
+    <img [src]="imagemGrande" class="rounded border" />
+    <div class="modal-footer"></div>
+  </div>
+</ng-template>
+<!-- End Add contact Modal -->
+
 <dx-popup
-  [width]="600"
-  [height]="300"
   [showTitle]="true"
   title="Selecionar e Enviar"
   [dragEnabled]="false"
@@ -11,17 +18,174 @@
     <input id="uploadFile" type="file" (change)="handleUpload($event)" #file />
   </div>
 </dx-popup>
+
+<dx-popup
+  [showTitle]="false"
+  [dragEnabled]="false"
+  [closeOnOutsideClick]="true"
+  [(visible)]="photoVisible"
+  width="auto"
+  height="auto"
+  position="center"
+  [dragEnabled]="true"
+>
+  <dx-scroll-view width="100%" height="100%">
+    <img [src]="imagemGrande" class="rounded border" />
+  </dx-scroll-view>
+</dx-popup>
+
+<dx-popup
+  [showTitle]="true"
+  title="Responder"
+  [dragEnabled]="false"
+  [closeOnOutsideClick]="true"
+  [(visible)]="popupResponder"
+  [width]="500"
+  [height]="200"
+  (onHidden)="limpaTexto()"
+>
+  <p class="mb-0">{{ responderTexto }}</p>
+  <div class="row">
+    <div class="col">
+      <input
+        #teste
+        [(ngModel)]="textoatual2"
+        type="text"
+        class="form-control form-control-lg bg-light border-light"
+        placeholder="Digite uma mensagem..."
+        (keyup.enter)="onEnviar2()"
+        (paste)="onPaste($event)"
+        [disabled]="desativaResponder"
+      />
+    </div>
+    <div class="col">
+      <button
+        type="submit"
+        (click)="onEnviar2()"
+        class="
+          btn btn-primary
+          font-size-16
+          btn-lg
+          chat-send
+          waves-effect waves-light
+        "
+      >
+        <i class="ri-send-plane-2-fill"></i>
+      </button>
+    </div>
+  </div>
+</dx-popup>
+
+<dx-popup
+  [showTitle]="true"
+  title="Gravar e Enviar Áudio"
+  [dragEnabled]="false"
+  [closeOnOutsideClick]="true"
+  [(visible)]="popupVisible2"
+  [width]="400"
+  [height]="250"
+>
+  <div>
+    <button
+      style="margin: 10px"
+      type="button"
+      class="btn btn-outline-success"
+      (click)="startRecording2()"
+    >
+      <i class="ri-record-circle-line"> Iniciar Gravação </i>
+    </button>
+    <button
+      type="button"
+      style="margin: 10px"
+      class="btn btn-outline-danger"
+      (click)="stopRecording2()"
+    >
+      <i class="ri-stop-fill"> Parar Gravação </i>
+    </button>
+    <button
+      type="button"
+      style="margin: 10px"
+      class="btn btn-outline-dark"
+      (click)="clearAudio()"
+    >
+      <i class="ri-stop-fill"> Limpar Gravação </i>
+    </button>
+    <button
+      type="button"
+      style="margin: 10px"
+      class="btn btn-outline-primary"
+      (click)="sendAudio()"
+      [disabled]="desativaEnviar"
+    >
+      <i class="ri-send-plane-2-fill"> Enviar Gravação </i>
+    </button>
+    <h2 style="margin: 10px">🎙️ {{ display }}</h2>
+    <!-- <audio controls="" *ngIf="url">
+      <source [src]="sanitize(url)" type="audio/wav" />
+    </audio> -->
+  </div>
+</dx-popup>
+
+<dx-popup
+  [showTitle]="true"
+  title="Selecionar e Enviar"
+  [dragEnabled]="false"
+  [closeOnOutsideClick]="true"
+  [(visible)]="popupListaUsuarios"
+  [width]="400"
+  [height]="700"
+>
+  <dx-scroll-view width="100%" height="100%">
+    <div>
+      <ul class="list-unstyled chat-list">
+        <li *ngFor="let item of usuarios">
+          <div class="media align-items-center">
+            <div class="media-body">
+              <h5 class="font-size-14 m-0">{{ item.name | translate }}</h5>
+            </div>
+
+            <div class="dropdown" ngbDropdown>
+              <a
+                href="javascript: void(0);"
+                class="text-muted dropdown-toggle"
+                ngbDropdownToggle
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="ri-more-2-fill"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                <a
+                  (click)="encaminharMensagem(item)"
+                  class="dropdown-item"
+                  href="#"
+                >
+                  Encaminhar
+                  <i class="ri-mail-add-line float-right text-muted"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </dx-scroll-view>
+</dx-popup>
+
 <dx-load-panel
   #loadPanel
   shadingColor="rgba(0,0,0,0.4)"
-  message="Enviando, aguarde..."
+  message="Aguarde..."
   [(visible)]="loadingVisible"
   [showIndicator]="true"
   [showPane]="true"
   [shading]="true"
   [closeOnOutsideClick]="false"
+  delay="0"
 >
 </dx-load-panel>
+<ngx-spinner></ngx-spinner>
 <div class="layout-wrapper d-lg-flex">
   <div class="side-menu flex-lg-column mr-lg-1">
     <!-- LOGO -->
@@ -68,7 +232,7 @@
             <i class="ri-message-3-line"></i>
           </a>
         </li>
-        <li *ngIf="adm" class="nav-item" ngbTooltip="Usuários">
+        <li class="nav-item" ngbTooltip="Usuários">
           <a
             class="nav-link"
             id="pills-groups-tab"
@@ -157,7 +321,7 @@
           ngbDropdown
           placement="top-left"
         >
-          <a
+          <!-- <a
             class="nav-link dropdown-toggle"
             href="#"
             role="button"
@@ -184,18 +348,18 @@
               />
               <span class="align-middle">{{ item.text }}</span>
             </a>
-          </div>
+          </div> -->
         </li>
 
         <li class="nav-item">
-          <a
+          <!-- <a
             class="nav-link"
             id="light-dark"
             href="//chatvia-light.angular.themesbrand.com"
             ngbTooltip="Tema"
           >
             <i class="ri-sun-line theme-mode-icon"></i>
-          </a>
+          </a> -->
         </li>
 
         <li
@@ -225,14 +389,14 @@
             </div>
           </a>
           <div class="dropdown-menu" ngbDropdownMenu>
-            <a class="dropdown-item" href="#"
+            <!-- <a class="dropdown-item" href="#"
               >{{ "chat.profiledropdown.profile" | translate }}
               <i class="ri-profile-line float-right text-muted"></i
             ></a>
             <a class="dropdown-item" href="#"
               >{{ "chat.profiledropdown.setting" | translate }}
               <i class="ri-settings-3-line float-right text-muted"></i
-            ></a>
+            ></a> -->
             <div class="dropdown-divider"></div>
             <a
               class="dropdown-item"
@@ -309,7 +473,7 @@
   </div>
 
   <!-- Start User chat -->
-  <div *ngIf="chatativo" class="user-chat w-100" id="chat-room">
+  <div class="user-chat w-100" name="chat-room" id="chat-room">
     <div class="d-lg-flex">
       <!-- start chat conversation section -->
       <div class="w-100">
@@ -349,7 +513,7 @@
                     <a href="#" class="text-reset user-profile-show">
                       {{ contato.ds_nome }}</a
                     >
-                    <i
+                    <!-- <i
                       class="
                         ri-record-circle-fill
                         font-size-10
@@ -357,7 +521,7 @@
                         d-inline-block
                         ml-1
                       "
-                    ></i>
+                    ></i> -->
                   </h5>
                 </div>
               </div>
@@ -365,7 +529,7 @@
             <div class="col-sm-8 col-4">
               <ul class="list-inline user-chat-nav text-right mb-0">
                 <li class="list-inline-item">
-                  <div class="dropdown" ngbDropdown>
+                  <!-- <div class="dropdown" ngbDropdown>
                     <button
                       class="btn nav-btn dropdown-toggle"
                       ngbDropdownToggle
@@ -395,7 +559,7 @@
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> -->
                 </li>
 
                 <li class="list-inline-item d-none d-lg-inline-block">
@@ -408,7 +572,7 @@
                   </button>
                 </li>
 
-                <li class="list-inline-item">
+                <!-- <li *ngIf="adm" class="list-inline-item">
                   <div class="dropdown" ngbDropdown>
                     <button
                       class="btn nav-btn dropdown-toggle"
@@ -437,8 +601,8 @@
                             | translate
                         }}
                         <i class="ri-user-2-line float-right text-muted"></i
-                      ></a>
-                      <!-- <a class="dropdown-item" href="#"
+                      ></a> -->
+                <!-- <a class="dropdown-item" href="#"
                         >{{
                           "chat.chatpanelheader.dropdown.archive" | translate
                         }}
@@ -452,7 +616,11 @@
                           class="ri-volume-mute-line float-right text-muted"
                         ></i
                       ></a> -->
-                      <a (click)="deleteChat()" class="dropdown-item" href="#"
+                <!-- <a
+                        *ngIf="adm"
+                        (click)="deleteChat()"
+                        class="dropdown-item"
+                        href="#"
                         >{{
                           "chat.chatpanelheader.dropdown.delete" | translate
                         }}
@@ -460,7 +628,7 @@
                       ></a>
                     </div>
                   </div>
-                </li>
+                </li> -->
               </ul>
             </div>
           </div>
@@ -470,8 +638,12 @@
         <!-- start chat conversation -->
         <perfect-scrollbar
           #perfectScroll
-          class="chat-conversation p-3 p-lg-4"
+          class="chat-conversation p-2 p-lg-4"
           (psYReachStart)="handleScroll($event)"
+          scroll-down="true"
+          refresh-on-change="Messages"
+          *ngIf="type === 'component'"
+          [config]="config"
         >
           <ul class="list-unstyled mb-0">
             <li
@@ -491,18 +663,26 @@
                 <div class="user-chat-content">
                   <div class="ctext-wrap">
                     <div class="ctext-wrap-content">
+                      <p *ngIf="data.ds_corpo_citado" class="chat-time mb-0">
+                        <em>
+                          {{ data.ds_corpo_citado | translate }}
+                        </em>
+                        <br />
+                      </p>
                       <p class="mb-0">
                         {{ data.message | translate }}
-                        <span class="animate-typing" *ngIf="data.istyping">
+                        <!-- <span class="animate-typing" *ngIf="data.istyping">
                           <span class="dot ml-1"></span>
                           <span class="dot ml-1"></span>
                           <span class="dot ml-1"></span>
-                        </span>
+                        </span> -->
                       </p>
 
                       <ul
                         class="list-inline message-img mb-0"
                         *ngIf="data.isimage"
+                        (click)="mostrarImagem(data)"
+                        (click)="openModal(content)"
                       >
                         <li
                           class="list-inline-item message-img-list"
@@ -516,7 +696,7 @@
                             >
                               <img
                                 [src]="data.imageContent"
-                                alt=""
+                                alt="{{ data.ds_corpo }}"
                                 class="rounded border"
                               />
                             </a>
@@ -528,7 +708,7 @@
                                   <i class="ri-download-2-line"></i>
                                 </a>
                               </li>
-                              <li class="list-inline-item dropdown" ngbDropdown>
+                              <!-- <li class="list-inline-item dropdown" ngbDropdown>
                                 <a
                                   class="dropdown-toggle"
                                   href="#"
@@ -592,7 +772,7 @@
                                     ></i
                                   ></a>
                                 </div>
-                              </li>
+                              </li> -->
                             </ul>
                           </div>
                         </li>
@@ -645,13 +825,13 @@
                                   aria-haspopup="true"
                                   aria-expanded="false"
                                 >
-                                  <i class="ri-more-fill"></i>
+                                  <!-- <i class="ri-more-fill"></i> -->
                                 </a>
-                                <div
+                                <!-- <div
                                   class="dropdown-menu dropdown-menu-right"
                                   ngbDropdownMenu
-                                >
-                                  <a class="dropdown-item" href="#"
+                                > -->
+                                <!-- <a class="dropdown-item" href="#"
                                     >{{
                                       "chat.messages.filedropdown.share"
                                         | translate
@@ -663,8 +843,8 @@
                                         text-muted
                                       "
                                     ></i
-                                  ></a>
-                                  <a class="dropdown-item" href="#"
+                                  ></a> -->
+                                <!-- <a class="dropdown-item" href="#"
                                     >{{
                                       "chat.messages.filedropdown.delete"
                                         | translate
@@ -676,8 +856,8 @@
                                         text-muted
                                       "
                                     ></i
-                                  ></a>
-                                </div>
+                                  ></a> -->
+                                <!-- </div> -->
                               </li>
                             </ul>
                           </div>
@@ -697,7 +877,10 @@
                         <span class="align-middle">{{
                           data.time | translate
                         }}</span>
-                        <i class="ri-whatsapp-line align-middle">
+                        <i
+                          *ngIf="data.ds_tipo === 'wp'"
+                          class="ri-whatsapp-line align-middle"
+                        >
                           <i [ngClass]="getClass(data.vl_status)"></i>
                         </i>
                       </p>
@@ -716,23 +899,42 @@
                         <i class="ri-more-2-fill"></i>
                       </a>
                       <div class="dropdown-menu" ngbDropdownMenu>
-                        <a class="dropdown-item" href="#"
+                        <a
+                          cdkCopyToClipboard="{{ data.ds_corpo }}"
+                          class="dropdown-item"
+                          href="#"
                           >{{ "chat.messages.dropdown.copy" | translate }}
+                          <i class="ri-file-copy-line float-right text-muted">
+                          </i
+                        ></a>
+                        <a
+                          *ngIf="!data.isimage"
+                          (click)="responderMensagem(data)"
+                          class="dropdown-item"
+                          href="#"
+                          >Responder
                           <i
-                            class="ri-file-copy-line float-right text-muted"
+                            class="ri-mail-send-line float-right text-muted"
                           ></i
                         ></a>
-                        <a class="dropdown-item" href="#"
-                          >{{ "chat.messages.dropdown.save" | translate }}
-                          <i class="ri-save-line float-right text-muted"></i
-                        ></a>
-                        <a class="dropdown-item" href="#"
+
+                        <a
+                          (click)="mostraEncaminhar(data)"
+                          class="dropdown-item"
+                          href="#"
                           >{{ "chat.messages.dropdown.forward" | translate }}
                           <i
                             class="ri-chat-forward-line float-right text-muted"
                           ></i
                         ></a>
-                        <a class="dropdown-item" href="#"
+
+                        <a
+                          (click)="deletaMensagem(data)"
+                          *ngIf="
+                            data.align === 'right' && data.ds_tipo === 'interno'
+                          "
+                          class="dropdown-item"
+                          href="#"
                           >{{ "chat.messages.dropdown.delete" | translate }}
                           <i
                             class="ri-delete-bin-line float-right text-muted"
@@ -753,7 +955,7 @@
                         }}</span>
                       </p>
                     </div>
-                    <div class="dropdown align-self-start" ngbDropdown>
+                    <!-- <div class="dropdown align-self-start" ngbDropdown>
                       <a
                         class="dropdown-toggle"
                         href="#"
@@ -789,7 +991,7 @@
                           ></i
                         ></a>
                       </div>
-                    </div>
+                    </div> -->
                   </div>
                   <div class="conversation-name">
                     {{ data.name | translate }}
@@ -816,7 +1018,10 @@
                   type="text"
                   class="form-control form-control-lg bg-light border-light"
                   placeholder="Digite uma mensagem..."
-                  (keyup.enter)="onEnviar()"
+                  (keypress)="keyPress($event)"
+                  (paste)="onPaste($event)"
+                  [libFocus]="false"
+                  [setFocus]="focusEvent"
                 />
               </div>
             </div>
@@ -846,12 +1051,8 @@
                       data-toggle="tooltip"
                       data-placement="top"
                       ngbTooltip="Audio"
-                      *ngIf="!audioURL"
-                      (holdTime)="onHold($event)"
-                      (start)="startRecording2()"
-                      (stop)="stopRecording2()"
+                      (click)="showInfo2()"
                     >
-                      {{ state === "recording" ? seconds : "" }}
                       <i class="ri-mic-line"></i>
                     </button>
 

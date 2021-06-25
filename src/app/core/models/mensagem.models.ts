@@ -27,4 +27,12 @@ ds_nome_contato_curto?:	string;
 ds_tipo?:	string;
 // tslint:disable-next-line: variable-name
 cd_chat?:	string;
+// tslint:disable-next-line: variable-name
+st_citacao?: boolean;
+// tslint:disable-next-line: variable-name
+ds_id_mensagem_whatsapp_serializado?: string;
+// tslint:disable-next-line: variable-name
+ds_corpo_citado?: string;
+// tslint:disable-next-line: variable-name
+vl_nao_lida?: number;
 }

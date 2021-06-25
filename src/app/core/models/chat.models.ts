@@ -34,4 +34,8 @@ export class Chat {
   cd_atendente?: string;
   // tslint:disable-next-line: variable-name
   cd_codigo_chat?: string;
+  // tslint:disable-next-line: variable-name
+  st_interno?: boolean;
+  // tslint:disable-next-line: variable-name
+  cd_grupo_wp?: string;
 }

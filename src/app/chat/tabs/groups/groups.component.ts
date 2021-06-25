@@ -8,6 +8,10 @@ import { Contato } from 'src/app/core/models/contato.models';
 import { Linha } from 'src/app/core/models/linha.models';
 import { Usuario } from 'src/app/core/models/usuario.models';
 import { AuthfakeauthenticationService } from 'src/app/core/services/authfake.service';
+import { ChatativoService } from 'src/app/core/services/chatativo.service';
+import { ChatsService } from 'src/app/core/services/chats.service';
+import { ChatUsuariosService } from 'src/app/core/services/chatUsuario.service';
+import { EventEmitterService } from 'src/app/core/services/eventemitter.service';
 import { UsuarioService } from 'src/app/core/services/usuarios.service';
 import { Contacts } from '../contacts/contacts.model';
 
@@ -27,7 +31,7 @@ export class GroupsComponent implements OnInit {
 
   public isCollapsed: boolean;
   groups: Groups[];
-
+  busca = '';
   // tslint:disable-next-line: variable-name
   ds_usuario = '';
   // tslint:disable-next-line: variable-name
@@ -46,10 +50,12 @@ export class GroupsComponent implements OnInit {
   editarLinha: Linha;
   editarUsuario2: Usuario;
   downloads = ['gerente', 'atendente'];
+  adm = false;
 
   constructor(private modalService: NgbModal, private authfackservice: AuthfakeauthenticationService,
               public translate: TranslateService, private usuarioService: UsuarioService,
-              private toastr: ToastrService) { }
+              private toastr: ToastrService, private chatUsuariosService: ChatUsuariosService,
+              private chatsService: ChatsService, private chatativo: ChatativoService) { }
 
   ngOnInit(): void {
     this.groups = groups;
@@ -58,6 +64,8 @@ export class GroupsComponent implements OnInit {
     this.isCollapsed = true;
 
     this.lerUsuarios();
+    const currentUser = this.authfackservice.currentUserValue;
+    this.adm = currentUser.ds_perfil_acesso === 'atendente' ? false : true;
   }
 
   /**
@@ -109,24 +117,26 @@ export class GroupsComponent implements OnInit {
     });
   }
 
-  deleteUsuario(event): any{
-    this.usuarioService.deleteUsuario(event.cd_codigo).subscribe(res => {
+  deleteUsuario(event, item): any{
+    event.stopPropagation();
+    this.usuarioService.deleteUsuario(item.cd_codigo).subscribe(res => {
       this.lerUsuarios();
       this.limpaCampos();
       this.toastr.success('Usuário deletado com sucesso');
     } );
   }
 
-  editarUsuario(event): any{
-    console.log(event);
-    this.editarUsuario2 = event;
-    this.ds_nome = event.ds_nome;
-    this.ds_perfil_acesso = event.ds_perfil_acesso;
-    this.ds_usuario = event.ds_usuario;
-    this.ds_senha = event.ds_senha;
+  editarUsuario(event, item): any{
+    event.stopPropagation();
+    this.editarUsuario2 = item;
+    this.ds_nome = item.ds_nome;
+    this.ds_perfil_acesso = item.ds_perfil_acesso;
+    this.ds_usuario = item.ds_usuario;
+    this.ds_senha = item.ds_senha;
   }
 
-  atualizarUsuario(event): any{
+  atualizarUsuario(event, item): any{
+    event.stopPropagation();
     this.editarUsuario2.ds_nome = this.ds_nome;
     this.editarUsuario2.ds_perfil_acesso = this.ds_perfil_acesso;
     this.editarUsuario2.ds_usuario = this.ds_usuario;
@@ -148,6 +158,67 @@ export class GroupsComponent implements OnInit {
 
   onItemClick(event): any{
     this.ds_perfil_acesso = event.itemData;
+  }
+
+  showChat = (item) => {
+    const currentUser = this.authfackservice.currentUserValue;
+    this.chatUsuariosService.getCM_BuscarChatPorIdContato(item.cd_codigo, currentUser.cd_codigo).subscribe(res => {
+      this.NovoChat = res;
+      if (this.NovoChat === null){
+        this.chatsService.CM_CriaNovoChatComChatsUsuariosParaUsuarios(item.cd_codigo, currentUser.cd_codigo).subscribe(x => {
+          this.NovoChat = x;
+          this.chatsService.getChatID(this.NovoChat.cd_codigo).subscribe(res3 => {
+            this.chatativo.nomeia(this.NovoChat.cd_codigo);
+            EventEmitterService.get('LerChat').emit(res3);
+            setTimeout(() => {
+            document.getElementById('chat-room').classList.add('user-chat-show');
+        }, 3000);
+        });
+        });
+      }else{
+        this.chatsService.getChatID(this.NovoChat.cd_codigo_chat).subscribe(res3 => {
+        this.chatativo.nomeia(this.NovoChat.cd_codigo_chat);
+        EventEmitterService.get('LerChat').emit(res3);
+        setTimeout(() => {
+        document.getElementById('chat-room').classList.add('user-chat-show');
+    }, 3000);
+    });
+  }
+}
+);
+  }
+
+  showChat2 = (event, item) => {
+    event.stopPropagation();
+    const currentUser = this.authfackservice.currentUserValue;
+    this.chatUsuariosService.getCM_BuscarChatPorIdContato(item.cd_codigo, currentUser.cd_codigo).subscribe(res => {
+      this.NovoChat = res;
+      if (this.NovoChat === null){
+        this.chatsService.CM_CriaNovoChatComChatsUsuariosParaUsuarios(item.cd_codigo, currentUser.cd_codigo).subscribe(x => {
+          this.NovoChat = x;
+          this.chatsService.getChatID(this.NovoChat.cd_codigo).subscribe(res3 => {
+            this.chatativo.nomeia(this.NovoChat.cd_codigo);
+            EventEmitterService.get('LerChat').emit(res3);
+            setTimeout(() => {
+            document.getElementById('chat-room').classList.add('user-chat-show');
+        }, 3000);
+        });
+        });
+      }else{
+        this.chatsService.getChatID(this.NovoChat.cd_codigo_chat).subscribe(res3 => {
+        this.chatativo.nomeia(this.NovoChat.cd_codigo_chat);
+        EventEmitterService.get('LerChat').emit(res3);
+        setTimeout(() => {
+        document.getElementById('chat-room').classList.add('user-chat-show');
+    }, 3000);
+    });
+  }
+}
+);
+  }
+
+  stop(event): any{
+    event.stopPropagation();
   }
 
 }

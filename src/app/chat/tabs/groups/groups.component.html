@@ -1,8 +1,8 @@
 <!-- Start Groups content -->
 <div>
   <div class="p-4">
-    <div class="user-chat-nav float-right">
-      <div ngbTooltip="Create group">
+    <div *ngIf="adm" class="user-chat-nav float-right">
+      <div ngbTooltip="Adicionar Usuário">
         <!-- Button trigger modal -->
         <button
           type="button"
@@ -606,6 +606,7 @@
         <input
           type="text"
           class="form-control bg-light"
+          [(ngModel)]="busca"
           placeholder="{{ 'chat.tabs.groups.search.placeholder' | translate }}"
         />
       </div>
@@ -619,7 +620,7 @@
     data-simplebar
   >
     <ul class="list-unstyled chat-list">
-      <li *ngFor="let item of usuarios">
+      <li *ngFor="let item of usuarios | filterBy: ['ds_nome']:busca">
         <!-- <a href="#">
           <div class="media align-items-center">
             <div class="chat-user-img mr-3">
@@ -646,12 +647,12 @@
             </div>
           </div>
         </a> -->
-        <div class="media align-items-center">
+        <div (click)="showChat(item)" class="media align-items-center">
           <div class="media-body">
             <h5 class="font-size-14 m-0">{{ item.name | translate }}</h5>
           </div>
 
-          <div class="dropdown" ngbDropdown>
+          <div (click)="stop($event)" class="dropdown" ngbDropdown>
             <a
               href="javascript: void(0);"
               class="text-muted dropdown-toggle"
@@ -664,14 +665,26 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
               <a
-                (click)="editarUsuario(item)"
+                (click)="showChat2($event, item)"
+                class="dropdown-item"
+                href="#"
+              >
+                Conversar <i class="ri-mail-add-line float-right text-muted"></i
+              ></a>
+              <a
+                *ngIf="adm"
+                (click)="editarUsuario($event, item)"
                 (click)="openGroupModal(content2)"
                 class="dropdown-item"
                 href="#"
                 >{{ "chat.tabs.contacts.list.dropdown.item2" | translate }}
                 <i class="ri-edit-line float-right text-muted"></i
               ></a>
-              <a (click)="deleteUsuario(item)" class="dropdown-item" href="#"
+              <a
+                *ngIf="adm"
+                (click)="deleteUsuario($event, item)"
+                class="dropdown-item"
+                href="#"
                 >{{ "chat.tabs.contacts.list.dropdown.item3" | translate }}
                 <i class="ri-delete-bin-line float-right text-muted"></i
               ></a>
