@@ -11,8 +11,16 @@ import { format } from 'date-fns';
 import { AuthfakeauthenticationService } from './authfake.service';
 import {MensagemInterna} from '../models/mensagemInterna.Models';
 
+
+
 @Injectable({ providedIn: 'root' })
 export class MensagensService {
+   TAGS = [
+    ["*", "b"],
+    ["_", "i"],
+    ["~", "s"],
+    ["```", "code"]
+];
   private mensagensUrl = environment.baseUrl + 'Mensagens/';
     constructor(private http: HttpClient, private sanitizer: DomSanitizer,
                 private authfackservice: AuthfakeauthenticationService) { }
@@ -43,8 +51,12 @@ export class MensagensService {
     bindarMensagens = (res: any): Promise<[]> => {
       const currentUser = this.authfackservice.currentUserValue;
       res.forEach(x => {
+        if (x.ds_corpo_citado !== null){
+          x.ds_corpo_citado = this.formatarWhats(x.ds_corpo_citado);
+        }
         if (x.ds_corpo !== null){
-          x.message = x.ds_corpo.replace(/\*/g, '');
+         // x.message = x.ds_corpo.replace(/\*/g, '');
+          x.message = this.formatarWhats(x.ds_corpo);
         }else{
           x.message = x.ds_corpo;
         }
@@ -132,5 +144,33 @@ getMessage(cd_codigo: string): Observable<Message>{
   return this.http.get<Message>(this.mensagensUrl + 'cd_codigo?cd_codigo=' + cd_codigo);
 }
 
+putMessage(message: Message): Observable<Message> {
+  const atualizado = {
+    cd_codigo : message.cd_codigo
+   };
+   return this.http.post<Message>(this.mensagensUrl + 'MArcarLida', atualizado);
+}
 
+marcaNaoLida(cd_codigo): Observable<Message> {
+  const atualizado = {
+   cd_codigo
+  };
+  return this.http.post<Message>(this.mensagensUrl + 'MArcarNaoLida', atualizado);
+}
+
+
+
+formatarWhats(mensagem): any {
+  var e = mensagem.replace(/&/g, "&").replace(/>/g, ">").replace(/</g, "&lt;").replace(/\n/g, "<br />");
+  for (var n = 0; n < this.TAGS.length; n++) {
+      var o = e.indexOf(this.TAGS[n][0]),
+          a = e.indexOf(this.TAGS[n][0], o + 1);
+      while (o > -1 && a > -1) {
+          e = e.substring(0, o) + "<" + this.TAGS[n][1] + ">" + e.substring(o + this.TAGS[n][0].length, a) + "</" + this.TAGS[n][1] + ">" + e.substring(a + this.TAGS[n][0].length);
+          o = e.indexOf(this.TAGS[n][0], a + 1);
+          a = e.indexOf(this.TAGS[n][0], o + 1);
+      }
+  }
+  return  e.length > 0 ? e : '<font color="silver">Sem mensagem</font>';
+}
 }

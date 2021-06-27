@@ -157,9 +157,11 @@
         >
           <a href="#" [ngClass]="user.st_interno === true ? 'int' : 'gru'">
             <div class="media">
-              <span *ngIf="user.vl_nao_lida > 0" class="badge badge-secondary">
-                {{ user.vl_nao_lida }}
-              </span>
+              <h5>
+                <span *ngIf="user.vl_nao_lida > 0" class="badge badge-danger">
+                  {{ user.vl_nao_lida }}
+                </span>
+              </h5>
               <div
                 class="chat-user-img align-self-center mr-3"
                 [ngClass]="{
@@ -225,7 +227,7 @@
                 </dx-menu>
               </div>
               <div *ngIf="!user.st_grupo" class="unread-message">
-                <span class="badge badge-soft-danger badge-pill">{{
+                <span class="badge badge-soft-info badge-pill">{{
                   user.unRead
                 }}</span>
               </div>

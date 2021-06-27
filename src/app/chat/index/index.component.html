@@ -7,12 +7,32 @@
 </ng-template>
 <!-- End Add contact Modal -->
 
+<ng-template #content2 let-modal>
+  <div class="modal-content">
+    <img [src]="imgURL" />
+    <div class="modal-footer">
+      <button
+        (click)="modal.dismiss('Cross click')"
+        type="button"
+        class="btn btn-light"
+      >
+        Cancelar
+      </button>
+      <button (click)="EnviarColado()" type="button" class="btn btn-primary">
+        Enviar
+      </button>
+    </div>
+  </div>
+</ng-template>
+
 <dx-popup
   [showTitle]="true"
   title="Selecionar e Enviar"
   [dragEnabled]="false"
   [closeOnOutsideClick]="true"
   [(visible)]="popupVisible"
+  [width]="400"
+  [height]="300"
 >
   <div>
     <input id="uploadFile" type="file" (change)="handleUpload($event)" #file />
@@ -663,20 +683,27 @@
                 <div class="user-chat-content">
                   <div class="ctext-wrap">
                     <div class="ctext-wrap-content">
-                      <p *ngIf="data.ds_corpo_citado" class="chat-time mb-0">
+                      <p
+                        *ngIf="data.ds_corpo_citado"
+                        [ngClass]="{
+                          'mb-0': data.align === 'right',
+                          'mb-0 int': data.align === 'left'
+                        }"
+                      >
                         <em>
-                          {{ data.ds_corpo_citado | translate }}
+                          <div [innerHTML]="data.ds_corpo_citado"></div>
                         </em>
                         <br />
                       </p>
-                      <p class="mb-0">
-                        {{ data.message | translate }}
-                        <!-- <span class="animate-typing" *ngIf="data.istyping">
+                      <div [innerHTML]="data.message"></div>
+                      <!-- <p class="mb-0">
+                        {{ data.message | translate }} -->
+                      <!-- <span class="animate-typing" *ngIf="data.istyping">
                           <span class="dot ml-1"></span>
                           <span class="dot ml-1"></span>
                           <span class="dot ml-1"></span>
                         </span> -->
-                      </p>
+                      <!-- </p> -->
 
                       <ul
                         class="list-inline message-img mb-0"
@@ -929,6 +956,19 @@
                         ></a>
 
                         <a
+                          (click)="marcarComoNaoLida(data)"
+                          class="dropdown-item"
+                          style="width: 234px"
+                          href="#"
+                          *ngIf="data.align === 'left'"
+                        >
+                          Marcar como não lida
+                          <i
+                            class="ri-chat-forward-line float-right text-muted"
+                          ></i
+                        ></a>
+
+                        <a
                           (click)="deletaMensagem(data)"
                           *ngIf="
                             data.align === 'right' && data.ds_tipo === 'interno'
@@ -1009,6 +1049,7 @@
 
         <!-- start chat input section -->
         <div class="p-3 p-lg-4 border-top mb-0">
+          <!-- <img [src]="imgURL" height="200" *ngIf="imgURL" /> -->
           <div class="row no-gutters">
             <div class="col">
               <div>

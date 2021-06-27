@@ -45,6 +45,9 @@ export enum RecordingState {
  * Chat-component
  */
 export class IndexComponent implements OnInit {
+  public imagePath;
+  imgURL: any;
+  public message: string;
   focusEvent = new EventEmitter<boolean>();
   desativaResponder = true;
   desativaEnviar = true;
@@ -119,6 +122,7 @@ export class IndexComponent implements OnInit {
 
   @ViewChild(PerfectScrollbarComponent, { static: false }) componentRef?: PerfectScrollbarComponent;
   @ViewChild(PerfectScrollbarDirective, { static: false }) directiveRef?: PerfectScrollbarDirective;
+  @ViewChild('content2', { static: false }) private content;
   constructor(private authFackservice: AuthfakeauthenticationService, private authService: AuthenticationService,
               private router: Router, public translate: TranslateService, private mensagensService: MensagensService,
               private chatativoService: ChatativoService, private usuarioService: UsuarioService,
@@ -126,7 +130,7 @@ export class IndexComponent implements OnInit {
               private linhaService: LinhaService, private chatService: ChatsService,
               private contatoServico: ContatoService, private spinner: NgxSpinnerService,
               private modalService: NgbModal, private toastr: ToastrService,
-              private statusMensagemService: StatusMensagemService
+              private statusMensagemService: StatusMensagemService, private sanitizer: DomSanitizer
               ) { }
 
   ngOnInit(): void {
@@ -172,13 +176,15 @@ export class IndexComponent implements OnInit {
       (x) => {
         if (this.chat !== undefined){
           if (this.chat.st_interno){
-          console.log('limpou');
           this.statusMensagemService.postCM_AtualizarMensagensLidas(this.chat.cd_codigo, currentUser.cd_codigo).subscribe(tantofaz => {
-            EventEmitterService.get('LerChat').emit();
           });
           }
+          else{
+            x.vl_status = 3;
+            this.mensagensService.putMessage(x).subscribe(result => {
+            });
           }
-        console.log('nova mensagem');
+          }
         this.scrollToBottom();
         this.componentRef.directiveRef.scrollToBottom(0, 500);
         const teste = [];
@@ -190,6 +196,7 @@ export class IndexComponent implements OnInit {
     }, 2000);
         this.scrollToBottom();
         this.componentRef.directiveRef.scrollToBottom(0, 500);
+        EventEmitterService.get('LerChat').emit();
       });
   }
 
@@ -209,11 +216,22 @@ limpaTexto(): any{
   this.textoatual2 = '';
 }
 
+marcarComoNaoLida(event): any{
+  this.mensagensService.marcaNaoLida(event.cd_codigo).subscribe(result => {
+    EventEmitterService.get('LerChat').emit();
+  });
+}
+
    LerMensagensPorChat = async (chatId: string) => {
       this.primeiraVezCarregando = true;
       const currentUser = this.authfackservice.currentUserValue;
       this.mensagensService.lerMensagensPorChat(chatId, this.vl_Numero_da_Pagina, this.vl_Tamanho_da_Pagina).then(res => {
         this.Messages = res;
+        res.forEach(element => {
+          element.vl_status = 3;
+          this.mensagensService.putMessage(element).subscribe(result => {
+          });
+        });
         this.loadingVisible = false;
         if (this.chat.st_interno){
             console.log('passou aqui');
@@ -223,6 +241,7 @@ limpaTexto(): any{
         }
         document.getElementById('chat-room').classList.add('user-chat-show');
         setTimeout(() => {
+          EventEmitterService.get('LerChat').emit();
           this.componentRef.directiveRef.scrollToBottom(0, 500);
     }, 1000);
       });
@@ -703,6 +722,7 @@ stopRecording2(): any {
 });
 }
 
+
 onPaste(event: any): any {
   const items = event.clipboardData.items;
   let blob = null;
@@ -713,17 +733,24 @@ onPaste(event: any): any {
     }
   }
 
-  // load image if there is a pasted image
   if (blob !== null) {
-    const currentUser = this.authfackservice.currentUserValue;
-    const fileFromBlob: File = new File([blob], 'your-filename.jpg');
-    const reader = new FileReader();
-    reader.readAsDataURL(fileFromBlob);
-    reader.onload = () => {
-      this.showLoadPanel();
-      let arquivoBi: any;
-      arquivoBi = reader.result;
-      this.binario = arquivoBi;
+  const currentUser = this.authfackservice.currentUserValue;
+  const fileFromBlob: File = new File([blob], 'your-filename.jpg');
+  const reader = new FileReader();
+  reader.readAsDataURL(fileFromBlob);
+  reader.onload = () => {
+    let arquivoBi: any;
+    arquivoBi = reader.result;
+    this.binario = arquivoBi;
+    this.imgURL = this.sanitizer.bypassSecurityTrustResourceUrl(this.binario);
+    this.modalService.open(this.content);
+    };
+}
+}
+
+EnviarColado(): any{
+      this.modalService.dismissAll();
+      const currentUser = this.authfackservice.currentUserValue;
       if (this.chat.st_interno){
         this.MensagemInternaEnviar = {
           ds_data : this.binario.substr(this.binario.indexOf(',') + 1),
@@ -782,11 +809,9 @@ onPaste(event: any): any {
         this.hideLoadPanel();
         console.log(error);
       });
-      }
-
-  };
+    }
   }
-}
+
 
 lerUsuarios(): any{
   const currentUser = this.authfackservice.currentUserValue;

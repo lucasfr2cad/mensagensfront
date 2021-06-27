@@ -32,4 +32,6 @@ export interface Message {
   st_citacao?: boolean;
   ds_id_mensagem_whatsapp_serializado?: string;
   ds_corpo_citado?: string;
+  ds_id?: string;
+  ds_id_mensagem_whatsapp?: string;
 }
